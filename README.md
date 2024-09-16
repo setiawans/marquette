@@ -12,6 +12,14 @@ PWS Link : http://steven-setiawan-marquette.pbp.cs.ui.ac.id/
   - [Alasan framework Django dijadikan permulaan pembelajaran](#menurut-anda-dari-semua-framework-yang-ada-mengapa-framework-django-dijadikan-permulaan-pembelajaran-pengembangan-perangkat-lunak)
   - [Mengapa model Django disebut sebagai ORM?](#mengapa-model-pada-django-disebut-sebagai-orm)
 
+- [README.md Tugas 3](#tugas-3)
+  - [Implementasi Checklist Tugas 3]
+  - [Mengapa kita membutuhkan _data delivery_ dalam sebuah platform?]
+  - [Manakah yang lebih baik? XML atau JSON?]
+  - [Fungsi is_valid() pada form Django]
+  - [Mengapa kita membutuhkan csrf_token dalam membuat form?]
+  - [Dokumentasi hasil akses URL pada Postman]
+
 ## Tugas 2
 
 ## Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial).
@@ -214,3 +222,275 @@ Menurut saya, Django cocok menjadi titik awal pembelajaran pengembangan perangka
 
 ## Mengapa model pada Django disebut sebagai ORM?
 Model pada Django disebut sebagai ORM (Object-Relational Mapping) dikarenakan Django memetakan objek-objeknya dengan database relasional. ORM menjadi interpreter yang memungkinkan kita berinteraksi dengan database tanpa perlu menuliskan query-query SQL secara manual.
+
+## Tugas 3
+
+## Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial).
+
+### Membuat input `form` untuk menambahkan objek model pada app sebelumnya.
+Sebelum membuat input `form`, karena page utama dan form kita memiliki beberapa bagian kode yang sama, maka kita dapat membuat suatu templates umum untuk mengurangi pengulangan kode yang repetitif.
+Dalam mengimplementasikan hal tersebut, terlebih dahulu saya membuat direktori baru bernama `templates/` pada direktori utama dan mengisinya dengan berkas `base.html`. Berikut adalah isi dari `base.html`:
+
+```html
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% block meta %} {% endblock meta %}
+  </head>
+
+  <body>
+    {% block content %} {% endblock content %}
+  </body>
+</html>
+```
+
+Setelah itu, agar `base.html` bisa digunakan sebagai template pada proyek kita, kita perlu mengubah `settings.py` terlebih dahulu. Berikut adalah bagian yang saya modifikasi dari `settings.py`:
+
+```py
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [BASE_DIR / 'templates'],
+        'APP_DIRS': True,
+        ...
+    },
+]
+```
+
+Setelah mengubah `settings.py`, saya langsung mengaplikasikan `base.html` pada berkas `main.html` yang terletak di direktori `main/templates/`. Berikut adalah hasil modifikasi dari `main.html`:
+
+```html
+{% extends 'base.html' %}
+{% block meta %}
+<title>{{ app_name }}</title>
+{% endblock meta %}
+
+{% block content %}
+<h1>Welcome to {{ app_name }}</h1>
+<h2>We're selling all Coquette items y'all ever need!</h2>
+<h4>Made by {{ name }} from {{ class }} class</h4>
+{% endblock content %}
+```
+
+Selanjutnya, sebelum membuat form, terlebih dahulu kita mengubah primary key dari models yang sebelumnya berbentuk integer menjadi UUID. Hal ini dilakukan untuk mencegah terjadinya serangan IDOR pada proyek yang kita buat. Berikut adalah hasil modifikasi yang saya lakukan pada `models.py`:
+
+```py
+from django.db import models
+import uuid
+
+class Product(models.Model) :
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=255)
+    price = models.IntegerField()
+    description = models.TextField()
+```
+
+Setelah itu, kita lakukan migrasi terlebih dahulu dengan menggunakan perintah berikut:
+
+```
+python manage.py makemigrations
+python manage.py migrate
+```
+
+Kita telah berhasil mengamankan proyek kita dari serangan IDOR. Serangan ini sendiri berfokus pada eksploitasi primary key dari setiap objek model yang telah kita buat, dengan demikian, penyerang dapat mengakses objek model yang bukan miliknya.
+
+Kemudian, untuk membuat form, kita tambahkan berkas `forms.py` pada direktori `main`. Kemudian, saya mengisi `forms.py` dengan kode berikut:
+
+```py
+from django.forms import ModelForm
+from main.models import Product
+
+class ProductForm(ModelForm) :
+    class Meta :
+        model = Product
+        fields = ["name", "price", "description"]
+```
+
+Setelah itu, saya melakukan sedikit modifikasi pada `views.py` yaitu melakukan import model dan form serta menambahkan mengimport redirect dari library `django.shortcuts`.
+
+```py
+from django.shortcuts import render, redirect
+from main.forms import ProductForm
+from main.models import Product
+```
+
+Selanjutnya, masih di `views.py`, saya menambahkan fungsi baru bernama `create_product`. Berikut adalah potongan kode dari fungsi tersebut:
+
+```py
+def create_product(request) :
+    form = ProductForm(request.POST or None)
+
+    if form.is_valid() and request.method == "POST" :
+        form.save()
+        return redirect('main:show_main')
+    
+    context = {'form' : form}
+    return render(request, "create_product.html", context)
+```
+
+Secara general, fungsi tersebut akan menampilkan page `create_product.html` kepada user. Apabila form disubmit (request method POST) dan isinya valid (form.is_valid()), maka data yang diinput akan disimpan pada database dan fungsi akan melakukan redirect ke page utama.
+
+Kemudian, saya juga menambahkan sedikit potongan kode pada fungsi `show_main`. Berikut adalah hasil modifikasi pada fungsi `show_main`:
+
+```py
+def show_main(request) :
+    products = Product.objects.all()
+
+    context = {
+        'app_name' : 'Marquette',
+        'name' : 'Steven Setiawan',
+        'class' : 'PBP D',
+        'products' : products # Modifikasi dilakukan disini
+    }
+    
+    return render(request, "main.html", context)
+```
+
+Penambahan kode tersebut dilakukan untuk nantinya menampilkan seluruh list product pada `main.html`.
+
+Selanjutnya, kita akan menambahkan views `create_product` ke `urls.py`. Berikut adalah hasil modifikasi yang telah saya lakukan:
+
+```py
+from django.urls import path
+from main.views import show_main, create_product
+
+app_name = 'main'
+
+urlpatterns = [
+    path('', show_main, name='show_main'),
+    path('create-product', create_product, name='create_product'),
+]
+```
+
+Setelah itu, agar fungsi `create_product` bisa menampilkan form yang telah kita buat, kita tambahkan berkas `create_product.html` pada direktori `main/templates/`. Berikut adalah isi dari `create_product.html`:
+
+```html
+{% extends 'base.html' %} 
+{% block content %}
+<h1>Add New Product</h1>
+
+<form method="POST">
+  {% csrf_token %}
+  <table>
+    {{ form.as_table }}
+    <tr>
+      <td></td>
+      <td>
+        <input type="submit" value="Add Product" />
+      </td>
+    </tr>
+  </table>
+</form>
+
+{% endblock %}
+```
+
+Kemudian, kita modifikasi juga `main.html` kita untuk menampilkan seluruh data product yang telah kita buat serta tombol "Add New Product" yang akan melakukan _redirect_ ke halaman form. Berikut adalah potongan kode yang saya tambahkan: 
+
+```html
+...
+{% if not products %}
+<p>Belum ada data product pada Marquette.</p>
+{% else %}
+<table>
+    <tr>
+        <th>Product Name</th>
+        <th>Price</th>
+        <th>Description</th>
+    </tr>
+
+    {% comment %} Berikut cara memperlihatkan data product di bawah baris ini
+    {% endcomment %}
+    {% for product in products %}
+    <tr>
+        <td>{{product.name}}</td>
+        <td>{{product.price}}</td>
+        <td>{{product.description}}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+
+<br />
+<a href="{% url 'main:create_product' %}">
+    <button>Add New Product</button>
+</a>
+{% endblock content %}
+```
+
+Form telah berhasil diimplementasikan pada proyek kita! Untuk mengecek apakah proyek dapat berjalan dengan baik, jalankan perintah berikut:
+
+```
+python manage.py runserver
+```
+
+### Menambahkan 4 fungsi `views` baru untuk melihat objek yang sudah ditambahkan dalam format XML, JSON, XML _by ID_, dan JSON _by id_.
+
+Kemudian, karena sebelumnya kita telah mengimplementasikan pembuatan objek product yang baru menggunakan form, tentu kita perlu mengetahui cara mengakses masing-masing product tersebut. Untuk itu, kita perlu membuat views yang menampilkan data dalam format XML maupun JSON.
+
+Pertama-tama, kita import library `HttpResponse` dan `serializers` dengan menambahkan potongan kode berikut pada `views.py` di direktori `main`:
+
+```py
+from django.http import HttpResponse
+from django.core import serializers
+```
+
+Kemudian, untuk menampilkan data, baik secara keseluruhan ataupun berdasarkan hasil filtering UUID, dalam format XML, saya menambahkan views berikut dalam `views.py`:
+
+```py
+def show_xml(request) :
+    data = Product.objects.all()
+    return HttpResponse(serializers.serialize("xml", data), content_type="application/xml")
+
+def show_xml_by_id(request, id) :
+    data = Product.objects.filter(pk = id)
+    return HttpResponse(serializers.serialize("xml", data), content_type="application/xml")
+```
+
+Pada potongan kode tersebut, fungsi `show_xml` akan mengembalikan seluruh objek yang ada pada database dalam format XML. Hal ini dilakukan dengan mengambil seluruh objek dari model Product, kemudian mengubahnya menjadi format XML dengan memanfaatkan serializers. Fungsi kedua juga mirip, tetapi terdapat filtering pada objek yang diambil, yaitu berdasarkan id.
+
+Hal yang sama juga diimplementasikan untuk menampilkan data dalam bentuk JSON. Berikut adalah potongan kodenya:
+
+```py
+def show_json(request) :
+    data = Product.objects.all()
+    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+
+def show_json_by_id(request, id) :
+    data = Product.objects.filter(pk = id)
+    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+```
+
+### Membuat routing URL untuk masing-masing `views`.
+Untuk membuat routing URL dari masing-masing `views` tersebut, terlebih dahulu saya melakukan import views ke berkas `urls.py` di direktori `main/`.
+
+```py
+from main.views import show_main, create_product, show_xml, show_json, show_xml_by_id, show_json_by_id
+```
+
+Setelah melakukan import views, saya kemudian menambahkan path untuk masing-masing view tersebut.
+
+```py
+urlpatterns = [
+    ...
+    path('xml/', show_xml, name='show_xml'),
+    path('json/', show_json, name='show_json'),
+    path('xml/<str:id>/', show_xml_by_id, name='show_xml_by_id'),
+    path('json/<str:id>/', show_json_by_id, name='show_json_by_id'),
+]
+```
+
+Path pertama dan kedua berfungsi untuk menampilkan seluruh data dalam format XML dan JSON. Sedangkan, path ketiga dan keempat akan menampilkan data sesuai dengan filtering UUID, hal ini terlihat pada bagian kode `<str:id>`. Dengan demikian, misalkan kita ingin melihat product dengan UUID tertentu dalam format JSON, kita hanya perlu membuka URL `http://127.0.0.1:8000/json/<UUID>`.
+
+## Jelaskan mengapa kita memerlukan data delivery dalam pengimplementasian sebuah platform?
+
+## Menurutmu, mana yang lebih baik antara XML dan JSON? Mengapa JSON lebih populer dibandingkan XML?
+
+## Jelaskan fungsi dari method is_valid() pada form Django dan mengapa kita membutuhkan method tersebut?
+
+## Mengapa kita membutuhkan csrf_token saat membuat form di Django? Apa yang dapat terjadi jika kita tidak menambahkan csrf_token pada form Django? Bagaimana hal tersebut dapat dimanfaatkan oleh penyerang?
+
+## Dokumentasi akses URL pada Postman
