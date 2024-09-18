@@ -512,3 +512,4 @@ Dengan mengimplementasikan `csrf_token`, setiap _request_ yang dilakukan oleh us
   ![](answer_image/Tugas3-GET-xml-UUID.png)
 - `GET /json/<UUID>`
   ![](answer_image/Tugas3-GET-json-UUID.png)
+  
