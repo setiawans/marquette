@@ -504,3 +504,11 @@ Apabila suatu form tidak mengimplementasikan `csrf_token`, maka penyerang dapat 
 Dengan mengimplementasikan `csrf_token`, setiap _request_ yang dilakukan oleh user dapat dicek kevalidannya, dikarenakan token ini akan digenerate oleh `server-side application` dan tidak dapat diketahui oleh penyerang, sehingga ketika mereka mengirimkan `request` pada form, _platform_ dapat langsung mengetahui bahwa `request` tersebut bukanlah `request` dari pengguna, melainkan dari penyerang.
 
 ## Dokumentasi akses URL pada Postman
+- `GET /json`
+  ![](answer_image/Tugas3-GET-json.png)
+- `GET /xml`
+  ![](answer_image/Tugas3-GET-xml.png)
+- `GET /json/<UUID>`
+  ![](answer_image/Tugas3-GET-json-UUID.png)
+- `GET /xml/<UUID>`
+  ![](answer_image/Tugas3-GET-xml-UUID.png)
