@@ -6,23 +6,23 @@ PWS Link : http://steven-setiawan-marquette.pbp.cs.ui.ac.id/
 
 ## Daftar Isi
 - [README.md Tugas 2](#tugas-2)
-  - [Implementasi Checklist Tugas 2](#jelaskan-bagaimana-cara-kamu-mengimplementasikan-checklist-di-atas-secara-step-by-step-bukan-hanya-sekadar-mengikuti-tutorial)
+  - [Implementasi Checklist Tugas 2](#implementasi-checklist-tugas-2)
   - [Bagan request client ke web aplikasi berbasis Django](#buatlah-bagan-yang-berisi-request-client-ke-web-aplikasi-berbasis-django-beserta-responnya-dan-jelaskan-pada-bagan-tersebut-kaitan-antara-urlspy-viewspy-modelspy-dan-berkas-html)
   - [Fungsi Git dalam pengembangan perangkat lunak](#jelaskan-fungsi-git-dalam-pengembangan-perangkat-lunak)
   - [Alasan framework Django dijadikan permulaan pembelajaran](#menurut-anda-dari-semua-framework-yang-ada-mengapa-framework-django-dijadikan-permulaan-pembelajaran-pengembangan-perangkat-lunak)
   - [Mengapa model Django disebut sebagai ORM?](#mengapa-model-pada-django-disebut-sebagai-orm)
 
 - [README.md Tugas 3](#tugas-3)
-  - [Implementasi Checklist Tugas 3]
-  - [Mengapa kita membutuhkan _data delivery_ dalam sebuah platform?]
-  - [Manakah yang lebih baik? XML atau JSON?]
-  - [Fungsi is_valid() pada form Django]
-  - [Mengapa kita membutuhkan csrf_token dalam membuat form?]
-  - [Dokumentasi hasil akses URL pada Postman]
+  - [Implementasi Checklist Tugas 3](#implementasi-checklist-tugas-3)
+  - [Mengapa kita membutuhkan _data delivery_ dalam sebuah platform?](#jelaskan-mengapa-kita-memerlukan-data-delivery-dalam-pengimplementasian-sebuah-platform)
+  - [Manakah yang lebih baik? XML atau JSON?](#menurutmu-mana-yang-lebih-baik-antara-xml-dan-json-mengapa-json-lebih-populer-dibandingkan-xml)
+  - [Fungsi is_valid() pada form Django](#jelaskan-fungsi-dari-method-is_valid-pada-form-django-dan-mengapa-kita-membutuhkan-method-tersebut)
+  - [Mengapa kita membutuhkan csrf_token dalam membuat form?](#mengapa-kita-membutuhkan-csrf_token-saat-membuat-form-di-django-apa-yang-dapat-terjadi-jika-kita-tidak-menambahkan-csrf_token-pada-form-django-bagaimana-hal-tersebut-dapat-dimanfaatkan-oleh-penyerang)
+  - [Dokumentasi hasil akses URL pada Postman](#dokumentasi-akses-url-pada-postman)
 
 ## Tugas 2
 
-## Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial).
+## Implementasi Checklist Tugas 2.
 
 ### Membuat sebuah proyek Django baru
 Untuk membuat proyek Django baru, langkah pertama yang saya lakukan adalah membuat folder dengan nama proyek yang saya inginkan.
@@ -225,7 +225,7 @@ Model pada Django disebut sebagai ORM (Object-Relational Mapping) dikarenakan Dj
 
 ## Tugas 3
 
-## Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial).
+## Implementasi Checklist Tugas 3.
 
 ### Membuat input `form` untuk menambahkan objek model pada app sebelumnya.
 Sebelum membuat input `form`, karena page utama dan form kita memiliki beberapa bagian kode yang sama, maka kita dapat membuat suatu templates umum untuk mengurangi pengulangan kode yang repetitif.
@@ -309,7 +309,7 @@ class ProductForm(ModelForm) :
         fields = ["name", "price", "description"]
 ```
 
-Setelah itu, saya melakukan sedikit modifikasi pada `views.py` yaitu melakukan import model dan form serta menambahkan mengimport redirect dari library `django.shortcuts`.
+Setelah itu, saya melakukan sedikit modifikasi pada `views.py` yaitu melakukan import model dan form serta mengimport redirect dari library `django.shortcuts`.
 
 ```py
 from django.shortcuts import render, redirect
@@ -331,7 +331,7 @@ def create_product(request) :
     return render(request, "create_product.html", context)
 ```
 
-Secara general, fungsi tersebut akan menampilkan page `create_product.html` kepada user. Apabila form disubmit (request method POST) dan isinya valid (form.is_valid()), maka data yang diinput akan disimpan pada database dan fungsi akan melakukan redirect ke page utama.
+Secara general, fungsi tersebut akan menampilkan page `create_product.html` kepada user. Apabila form disubmit (request method POST) dan isinya valid (`form.is_valid()`), maka data yang diinput akan disimpan pada database dan fungsi akan melakukan redirect ke page utama.
 
 Kemudian, saya juga menambahkan sedikit potongan kode pada fungsi `show_main`. Berikut adalah hasil modifikasi pada fungsi `show_main`:
 
@@ -388,7 +388,7 @@ Setelah itu, agar fungsi `create_product` bisa menampilkan form yang telah kita 
 {% endblock %}
 ```
 
-Kemudian, kita modifikasi juga `main.html` kita untuk menampilkan seluruh data product yang telah kita buat serta tombol "Add New Product" yang akan melakukan _redirect_ ke halaman form. Berikut adalah potongan kode yang saya tambahkan: 
+Kemudian, kita modifikasi juga `main.html` untuk menampilkan seluruh data product yang telah kita buat serta tombol "Add New Product" yang akan melakukan _redirect_ ke halaman form. Berikut adalah potongan kode yang saya tambahkan: 
 
 ```html
 ...
@@ -486,22 +486,22 @@ urlpatterns = [
 Path pertama dan kedua berfungsi untuk menampilkan seluruh data dalam format XML dan JSON. Sedangkan, path ketiga dan keempat akan menampilkan data sesuai dengan filtering UUID, hal ini terlihat pada bagian kode `<str:id>`. Dengan demikian, misalkan kita ingin melihat product dengan UUID tertentu dalam format JSON, kita hanya perlu membuka URL `http://127.0.0.1:8000/json/<UUID>`.
 
 ## Jelaskan mengapa kita memerlukan data delivery dalam pengimplementasian sebuah platform?
-Dalam mengimplementasikan sebuah _platform_, _data delivery_ sangat diperlukan untuk proses pertukaran data antara satu bagian/_stack_ dengan bagian lainnya. Dengan adanya mekanisme _data delivery_ ini, proses pengelolaan data, terutama antara front-end dan back-end, akan berjalan jauh lebih baik dan efisien. Hal ini didukung dengan fleksibilitas format data seperti XML dan JSON. Apabila suatu _platform_ tidak mengimplementasikan mekanisme ini, _platform_ yang kita buat tidak akan berfungsi secara maksimal karena data-data yang masuk tidak dapat dikelola dengan baik oleh berbagai komponen/bagian _platform_ tersebut.
+Dalam mengimplementasikan sebuah _platform_, _data delivery_ sangat diperlukan untuk proses pertukaran data antara satu bagian/_stack_ dengan bagian lainnya. Dengan adanya mekanisme _data delivery_ ini, proses pengelolaan data, terutama antara front-end dan back-end, akan berjalan jauh lebih baik dan efisien. Hal ini didukung dengan fleksibilitas format data seperti XML dan JSON. Apabila suatu _platform_ tidak mengimplementasikan mekanisme ini, _platform_ tersebut tidak akan berfungsi secara maksimal karena data-data yang masuk tidak dapat dikelola dengan baik oleh berbagai komponen/bagian _platform_ tersebut.
 
 ## Menurutmu, mana yang lebih baik antara XML dan JSON? Mengapa JSON lebih populer dibandingkan XML?
-Menurut diri saya pribadi, JSON masih lebih baik dibandingkan XML karena tingkat readability kode yang lebih baik. Hal ini didasarkan pada fakta bahwa struktur JSON mirip dengan struktur _dictionary_ python yang mengimplementasikan key:value pair, sehingga JSON lebih umum dan mudah untuk dipahami oleh para pengembang. Hal ini juga didukung dengan keringkasan serta simplesitas JSON dibandingkan XML yang terkesan lebih bertele-tele. Selain itu, JSON juga sudah terintegrasi dengan bahasa JavaScript, sehingga memudahkan implementasinya dalam pengembangan _platform_.
+Menurut diri saya pribadi, JSON masih lebih baik dibandingkan XML karena tingkat _readability_ kode yang lebih tinggi. Hal ini jugalah yang menyebabkan JSON lebih populer dibandingkan XML. Perbandingan _readability_ ini didasarkan pada fakta bahwa struktur JSON mirip dengan struktur _dictionary_ python yang mengimplementasikan key:value pair, sehingga JSON lebih umum dan mudah untuk dipahami oleh para pengembang. Hal ini juga didukung dengan keringkasan serta simplesitas JSON dibandingkan XML, yang terkesan lebih bertele-tele. Selain itu, JSON juga sudah terintegrasi dengan bahasa JavaScript, sehingga memudahkan implementasinya dalam pengembangan _platform_. Walaupun begitu, XML masih berguna untuk beberapa kasus proyek yang memerlukan implementasi kompleks (yang tidak dapat dilakukan oleh JSON), sehingga XML tidak semena-mena menjadi bahasa yang _useless_ atau tidak berguna karena tidak sebaik JSON dalam proyek skala kecil.
 
 ## Jelaskan fungsi dari method is_valid() pada form Django dan mengapa kita membutuhkan method tersebut?
-Method `is_valid()` berfungsi untuk memvalidasi data yang diinput/dimasukkan oleh user pada form yang telah kita buat. Method ini akan mengecek apakah input yang dimasukkan oleh user sesuai dengan aturan yang telah dibuat sebelumnya. Apabila input dari user dianggap valid, maka method akan mengembalikan respon `True` dan data pada form akan diproses dan disimpan pada database.
+Method `is_valid()` berfungsi untuk memvalidasi data yang diinput/dimasukkan oleh user pada form yang telah kita buat. Method ini akan mengecek apakah input yang dimasukkan oleh user sesuai dengan aturan yang telah kita buat sebelumnya. Apabila input dari user dianggap valid, maka method akan mengembalikan respon `True` dan data pada form akan diproses dan disimpan pada database.
 
-Method `is_valid()` diperlukan untuk memastikan kevalidan data dari input yang dimasukkan oleh user. Dengan demikian, kita dapat memastikan integritas serta keamanan _platform_ yang telah kita buat. Selain itu, adanya validasi ini akan memastikan konsistensi serta kebersihan dan memudahkan proses _maintenance_ yang dilakukan oleh para pengembang.
+Method `is_valid()` diperlukan untuk memastikan kevalidan data dari input yang dimasukkan oleh user. Dengan demikian, kita dapat memastikan integritas serta keamanan _platform_ yang telah kita buat. Selain itu, adanya validasi ini akan memastikan konsistensi serta kebersihan database dan memudahkan proses _maintenance_ yang dilakukan oleh para pengembang ke depannya.
 
 ## Mengapa kita membutuhkan csrf_token saat membuat form di Django? Apa yang dapat terjadi jika kita tidak menambahkan csrf_token pada form Django? Bagaimana hal tersebut dapat dimanfaatkan oleh penyerang?
 `csrf_token` dibutuhkan dalam pembuatan form di Django untuk mencegah terjadinya _exploit_ CSRF (Cross-Site Request Forgery). CSRF atau sering dikenal sebagai _one-click attacks_ adalah sebuah kerentanan pada keamanan website di mana penyerang akan mengirimkan permintaan berbahaya sebagai user yang sudah terauntetikasi.
 
-Apabila suatu form tidak mengimplementasikan `csrf_token`, maka penyerang dapat dengan mudah melancarkan serangan CSRF. Hal ini didasarkan pada fakta bahwa _platform_ akan menganggap setiap `request` yang dilakukan adalah valid dan benar dari user. Dengan demikian, penyerang dapat mengirimkan _well crafted malicious request_ untuk mengeksekusi _request_ berbahaya.
+Apabila suatu form tidak mengimplementasikan `csrf_token`, maka penyerang dapat dengan mudah melancarkan serangan CSRF. Hal ini didasarkan pada fakta bahwa _platform_ akan menganggap setiap `request` yang dilakukan adalah valid dan benar dari user. Dengan demikian, penyerang dapat mengirimkan _well crafted malicious request_ untuk mengeksekusi tindakan berbahaya.
 
-Dengan mengimplementasikan `csrf_token`, setiap _request_ yang dilakukan oleh user dapat dicek kevalidannya, dikarenakan token ini akan digenerate oleh `server-side application` dan tidak dapat diketahui oleh penyerang, sehingga ketika mereka mengirimkan `request` pada form, _platform_ dapat langsung mengetahui bahwa `request` tersebut bukanlah `request` dari pengguna, melainkan dari penyerang.
+Dengan mengimplementasikan `csrf_token`, setiap _request_ yang dilakukan oleh user dapat dicek kevalidannya, dikarenakan token ini akan digenerate oleh `server-side application` dan tidak dapat diketahui oleh penyerang. Dengan demikian, apabila penyerang mengirimkan _request_ melalui form, _platform_ dapat langsung mengetahui bahwa _request_ tersebut bukanlah _request_ dari pengguna, melainkan dari penyerang.
 
 ## Dokumentasi akses URL pada Postman
 - `GET /xml`
