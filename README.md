@@ -553,9 +553,10 @@ Dengan mengimplementasikan `csrf_token`, setiap _request_ yang dilakukan oleh us
 
 ## Implementasi Checklist Tugas 4
 <details>
-<summary>Mengimplementasikan fungsi registrasi, login, dan logout
+<summary>Mengimplementasikan fungsi registrasi, login, dan logout</summary>
 
-1. **Registrasi**
+- **Registrasi**
+
   Dalam mengimplementasikan fungsi registrasi, terlebih dahulu saya melakukan _import_ beberapa _library_ yang saya perlukan, seperti `UserCreationForm` dan `messages` pada berkas `views.py`. Berikut adalah kode yang saya tambahkan:
 
   ```py
@@ -629,7 +630,8 @@ Dengan mengimplementasikan `csrf_token`, setiap _request_ yang dilakukan oleh us
   ```
   Mekanisme `register` berhasil dibuat!
 
-2. **Login**
+- **Login**
+
   Dalam mengimplementasikan fungsi login, sama seperti saat membuat fungsi registrasi, terlebih dahulu kita _import library-library_ yang diperlukan pada `views.py`. Berikut adalah kode yang saya tambahkan:
   
   ```py
@@ -706,7 +708,8 @@ Dengan mengimplementasikan `csrf_token`, setiap _request_ yang dilakukan oleh us
 
   Mekanisme login berhasil dibuat!
 
-3. **Logout**
+- **Logout**
+
   Terakhir, kita akan membuat fungsi logout. Seperti sebelumnya, terlebih dahulu kita lakukan _import library_ yang kita butuhkan pada `views.py`. Berikut adalah kode yang saya tambahkan:
 
   ```py
