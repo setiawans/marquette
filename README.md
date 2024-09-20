@@ -20,7 +20,15 @@ PWS Link : http://steven-setiawan-marquette.pbp.cs.ui.ac.id/
   - [Mengapa kita membutuhkan csrf_token dalam membuat form?](#mengapa-kita-membutuhkan-csrf_token-saat-membuat-form-di-django-apa-yang-dapat-terjadi-jika-kita-tidak-menambahkan-csrf_token-pada-form-django-bagaimana-hal-tersebut-dapat-dimanfaatkan-oleh-penyerang)
   - [Dokumentasi hasil akses URL pada Postman](#dokumentasi-akses-url-pada-postman)
 
-## Tugas 2
+- [README.md Tugas 4](#tugas-4)
+  - [Implementasi Checklist Tugas 4]
+  - [Apa perbedaan antara `HttpResponseRedirect()` dan `redirect()`]
+  - [Jelaskan cara kerja penghubungan model `Product` dengan `User`]
+  - [Apa perbedaan antara _authentication_ dan _authorization_]
+  - [Bagaimana Django mengingat pengguna yang telah login?]
+
+<details>
+<summary><h3>## Tugas 2</h3></summary>
 
 ## Implementasi Checklist Tugas 2.
 
@@ -223,7 +231,10 @@ Menurut saya, Django cocok menjadi titik awal pembelajaran pengembangan perangka
 ## Mengapa model pada Django disebut sebagai ORM?
 Model pada Django disebut sebagai ORM (Object-Relational Mapping) dikarenakan Django memetakan objek-objeknya dengan database relasional. ORM menjadi interpreter yang memungkinkan kita berinteraksi dengan database tanpa perlu menuliskan query-query SQL secara manual.
 
-## Tugas 3
+</details>
+
+<details>
+<summary><h3>## Tugas 3</h3></summary>
 
 ## Implementasi Checklist Tugas 3.
 
@@ -512,4 +523,8 @@ Dengan mengimplementasikan `csrf_token`, setiap _request_ yang dilakukan oleh us
   ![](answer_image/Tugas3-GET-xml-UUID.png)
 - `GET /json/<UUID>`
   ![](answer_image/Tugas3-GET-json-UUID.png)
-  
+
+</details>
+
+
+## Tugas 4
