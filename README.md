@@ -21,11 +21,11 @@ PWS Link : http://steven-setiawan-marquette.pbp.cs.ui.ac.id/
   - [Dokumentasi hasil akses URL pada Postman](#dokumentasi-akses-url-pada-postman)
 
 - [README.md Tugas 4](#tugas-4)
-  - [Implementasi Checklist Tugas 4]
-  - [Apa perbedaan antara `HttpResponseRedirect()` dan `redirect()`]
-  - [Jelaskan cara kerja penghubungan model `Product` dengan `User`]
-  - [Apa perbedaan antara _authentication_ dan _authorization_]
-  - [Bagaimana Django mengingat pengguna yang telah login?]
+  - [Implementasi Checklist Tugas 4](#implementasi-checklist-tugas-4)
+  - [Apa perbedaan antara `HttpResponseRedirect()` dan `redirect()`](#apa-perbedaan-antara-httpresponseredirect-dan-redirect)
+  - [Jelaskan cara kerja penghubungan model `Product` dengan `User`](#jelaskan-cara-kerja-penghubungan-model-product-dengan-user)
+  - [Apa perbedaan antara _authentication_ dan _authorization_](#apa-perbedaan-antara-authentication-dan-authorization-apakah-yang-dilakukan-saat-pengguna-login-jelaskan-bagaimana-django-mengimplementasikan-kedua-konsep-tersebut)
+  - [Bagaimana Django mengingat pengguna yang telah login?](#bagaimana-django-mengingat-pengguna-yang-telah-login-jelaskan-kegunaan-lain-dari-cookies-dan-apakah-semua-cookies-aman-digunakan)
 
 ## Tugas 2
 
@@ -89,7 +89,7 @@ Terlihat ada folder baru pada root folder dengan nama `main`. Hal ini menandakan
 </details>
 
 <details>
-<summary>Melakukan routing pada proyek agar dapat menjalankan aplikasi `main`</summary>
+<summary>Melakukan routing pada proyek agar dapat menjalankan aplikasi main</summary>
 Selanjutnya, agar aplikasi main dapat dijalankan, kita perlu terlebih dahulu melakukan routing pada proyek. Hal ini dilakukan dengan membuka file `settings.py` pada direktori proyek `marquette` dan menambahkan `main` pada variabel `INSTALLED_APPS`.
 
 ```py
@@ -249,7 +249,7 @@ Model pada Django disebut sebagai ORM (Object-Relational Mapping) dikarenakan Dj
 ## Implementasi Checklist Tugas 3.
 
 <details>
-<summary>Membuat input `form` untuk menambahkan objek model pada app sebelumnya</summary>
+<summary>Membuat input form untuk menambahkan objek model pada app sebelumnya</summary>
 Sebelum membuat input `form`, karena page utama dan form kita memiliki beberapa bagian kode yang sama, maka kita dapat membuat suatu templates umum untuk mengurangi pengulangan kode yang repetitif.
 Dalam mengimplementasikan hal tersebut, terlebih dahulu saya membuat direktori baru bernama `templates/` pada direktori utama dan mengisinya dengan berkas `base.html`. Berikut adalah isi dari `base.html`:
 
@@ -451,7 +451,7 @@ python manage.py runserver
 </details>
 
 <details>
-<summary>Menambahkan 4 fungsi `views` baru untuk melihat objek yang sudah ditambahkan dalam format XML, JSON, XML _by ID_, dan JSON _by id_</summary>
+<summary>Menambahkan 4 fungsi views baru untuk melihat objek yang sudah ditambahkan dalam format XML, JSON, XML by ID, dan JSON by id</summary>
 
 Kemudian, karena sebelumnya kita telah mengimplementasikan pembuatan objek product yang baru menggunakan form, tentu kita perlu mengetahui cara mengakses masing-masing product tersebut. Untuk itu, kita perlu membuat views yang menampilkan data dalam format XML maupun JSON.
 
@@ -490,7 +490,7 @@ def show_json_by_id(request, id) :
 </details>
 
 <details>
-<summary>Membuat routing URL untuk masing-masing `views`</summary>
+<summary>Membuat routing URL untuk masing-masing views</summary>
 Untuk membuat routing URL dari masing-masing `views` tersebut, terlebih dahulu saya melakukan import views ke berkas `urls.py` di direktori `main/`.
 
 ```py
@@ -541,3 +541,19 @@ Dengan mengimplementasikan `csrf_token`, setiap _request_ yang dilakukan oleh us
   ![](answer_image/Tugas3-GET-json-UUID.png)
 
 ## Tugas 4
+
+## Implementasi Checklist Tugas 4
+<details>
+<summary>Mengimplementasikan fungsi registrasi, login, dan logout
+</details>
+
+<details><summary>Menghubungkan model Product dengan User</summary></details>
+
+<details><summary>Membuat dua akun pengguna dengan masing-masing tiga dummy data</summary></details>
+
+<details><summary>Menampilkan detail informasi pengguna yang sedang logged in</summary></details>
+
+## Apa perbedaan antara `HttpResponseRedirect()` dan `redirect()`
+## Jelaskan cara kerja penghubungan model `Product` dengan `User`!
+## Apa perbedaan antara _authentication_ dan _authorization_, apakah yang dilakukan saat pengguna login? Jelaskan bagaimana Django mengimplementasikan kedua konsep tersebut.
+## Bagaimana Django mengingat pengguna yang telah login? Jelaskan kegunaan lain dari _cookies_ dan apakah semua _cookies_ aman digunakan?
