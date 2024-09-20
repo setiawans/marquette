@@ -27,12 +27,12 @@ PWS Link : http://steven-setiawan-marquette.pbp.cs.ui.ac.id/
   - [Apa perbedaan antara _authentication_ dan _authorization_]
   - [Bagaimana Django mengingat pengguna yang telah login?]
 
-<details>
-<summary><h3>## Tugas 2</h3></summary>
+## Tugas 2
 
 ## Implementasi Checklist Tugas 2.
 
-### Membuat sebuah proyek Django baru
+<details>
+<summary>Membuat sebuah proyek Django baru</summary>
 Untuk membuat proyek Django baru, langkah pertama yang saya lakukan adalah membuat folder dengan nama proyek yang saya inginkan.
 
 Untuk melakukan itu, saya menjalankan command berikut:
@@ -75,8 +75,10 @@ python manage.py runserver
 ```
 
 Deployment berhasil dan dapat diakses melalui http://127.0.0.1:8000/
+</details>
 
-### Membuat aplikasi main pada proyek
+<details>
+<summary>Membuat aplikasi main pada proyek</summary>
 Setelah deployment berhasil dilakukan di local, saya membuat aplikasi `main` pada proyek dengan menjalankan:
 
 ```
@@ -84,8 +86,10 @@ python manage.py startapp main
 ```
 
 Terlihat ada folder baru pada root folder dengan nama `main`. Hal ini menandakan bahwa aplikasi main berhasil ditambahkan pada proyek.
+</details>
 
-### Melakukan routing pada proyek agar dapat menjalankan aplikasi `main`
+<details>
+<summary>Melakukan routing pada proyek agar dapat menjalankan aplikasi `main`</summary>
 Selanjutnya, agar aplikasi main dapat dijalankan, kita perlu terlebih dahulu melakukan routing pada proyek. Hal ini dilakukan dengan membuka file `settings.py` pada direktori proyek `marquette` dan menambahkan `main` pada variabel `INSTALLED_APPS`.
 
 ```py
@@ -94,8 +98,10 @@ INSTALLED_APPS = [
     'main'
 ]
 ```
+</details>
 
-### Membuat model pada aplikasi main
+<details>
+<summary>Membuat model pada aplikasi main</summary>
 Setelah melakukan routing agar dapat menjalankan aplikasi `main`, selanjutnya kita akan membuat model. Hal ini dilakukan dengan memodifikasi file `models.py` pada folder `main`. Berikut adalah kode yang saya tambahkan:
 
 ```py
@@ -113,8 +119,10 @@ python manage.py migrate
 ```
 
 Migration dilakukan untuk merefleksikan perubahan dalam model ke database schema (memastikan model dicatat dalam database schema).
+</details>
 
-### Membuat sebuah fungsi pada views.py
+<details>
+<summary>Membuat sebuah fungsi pada views.py</summary>
 Kemudian, saya membuat folder baru pada main dengan nama templates dan membuat file baru bernama main.html. main.html berfungsi sebagai display tampilan dari aplikasi main saya. Berikut adalah kode pada main.html saya:
 
 ```html
@@ -146,8 +154,10 @@ def show_main(request) :
     }
     return render(request, "main.html", context)
 ```
+</details>
 
-### Membuat routing pada urls.py aplikasi main
+<details>
+<summary>Membuat routing pada urls.py aplikasi main</summary>
 Selanjutnya, saya melakukan konfigurasi routing urls.py agar aplikasi `main` dapat diakses melalui peramban ketika proyek dijalankan. Saya membuat file baru bernama `urls.py` pada direktori `main` dan menambahkan kode berikut:
 
 ```py
@@ -172,8 +182,10 @@ urlpatterns = [
     path('', include('main.urls')),
 ]
 ```
+</details>
 
-### Melakukan deployment ke PWS
+<details>
+<summary>Melakukan deployment ke PWS</summary>
 Setelah proyek berhasil dibuat, saya akan menyimpannya pada repository github serta mendeploynya pada PWS.
 
 - **GitHub**
@@ -212,6 +224,7 @@ Setelah proyek berhasil dibuat, saya akan menyimpannya pada repository github se
   git branch -M main
   git push pws main:master
   ```
+</details>
 
 ## Buatlah bagan yang berisi request client ke web aplikasi berbasis Django beserta responnya dan jelaskan pada bagan tersebut kaitan antara urls.py, views.py, models.py, dan berkas html.
 ![](answer_image/Tugas2-No2-Bagan.png)
@@ -231,14 +244,12 @@ Menurut saya, Django cocok menjadi titik awal pembelajaran pengembangan perangka
 ## Mengapa model pada Django disebut sebagai ORM?
 Model pada Django disebut sebagai ORM (Object-Relational Mapping) dikarenakan Django memetakan objek-objeknya dengan database relasional. ORM menjadi interpreter yang memungkinkan kita berinteraksi dengan database tanpa perlu menuliskan query-query SQL secara manual.
 
-</details>
-
-<details>
-<summary><h3>## Tugas 3</h3></summary>
+## Tugas 3
 
 ## Implementasi Checklist Tugas 3.
 
-### Membuat input `form` untuk menambahkan objek model pada app sebelumnya.
+<details>
+<summary>Membuat input `form` untuk menambahkan objek model pada app sebelumnya</summary>
 Sebelum membuat input `form`, karena page utama dan form kita memiliki beberapa bagian kode yang sama, maka kita dapat membuat suatu templates umum untuk mengurangi pengulangan kode yang repetitif.
 Dalam mengimplementasikan hal tersebut, terlebih dahulu saya membuat direktori baru bernama `templates/` pada direktori utama dan mengisinya dengan berkas `base.html`. Berikut adalah isi dari `base.html`:
 
@@ -437,8 +448,10 @@ Form telah berhasil diimplementasikan pada proyek kita! Untuk mengecek apakah pr
 ```
 python manage.py runserver
 ```
+</details>
 
-### Menambahkan 4 fungsi `views` baru untuk melihat objek yang sudah ditambahkan dalam format XML, JSON, XML _by ID_, dan JSON _by id_.
+<details>
+<summary>Menambahkan 4 fungsi `views` baru untuk melihat objek yang sudah ditambahkan dalam format XML, JSON, XML _by ID_, dan JSON _by id_</summary>
 
 Kemudian, karena sebelumnya kita telah mengimplementasikan pembuatan objek product yang baru menggunakan form, tentu kita perlu mengetahui cara mengakses masing-masing product tersebut. Untuk itu, kita perlu membuat views yang menampilkan data dalam format XML maupun JSON.
 
@@ -474,8 +487,10 @@ def show_json_by_id(request, id) :
     data = Product.objects.filter(pk = id)
     return HttpResponse(serializers.serialize("json", data), content_type="application/json")
 ```
+</details>
 
-### Membuat routing URL untuk masing-masing `views`.
+<details>
+<summary>Membuat routing URL untuk masing-masing `views`</summary>
 Untuk membuat routing URL dari masing-masing `views` tersebut, terlebih dahulu saya melakukan import views ke berkas `urls.py` di direktori `main/`.
 
 ```py
@@ -495,6 +510,7 @@ urlpatterns = [
 ```
 
 Path pertama dan kedua berfungsi untuk menampilkan seluruh data dalam format XML dan JSON. Sedangkan, path ketiga dan keempat akan menampilkan data sesuai dengan filtering UUID, hal ini terlihat pada bagian kode `<str:id>`. Dengan demikian, misalkan kita ingin melihat product dengan UUID tertentu dalam format JSON, kita hanya perlu membuka URL `http://127.0.0.1:8000/json/<UUID>`.
+</details>
 
 ## Jelaskan mengapa kita memerlukan data delivery dalam pengimplementasian sebuah platform?
 Dalam mengimplementasikan sebuah _platform_, _data delivery_ sangat diperlukan untuk proses pertukaran data antara satu bagian/_stack_ dengan bagian lainnya. Dengan adanya mekanisme _data delivery_ ini, proses pengelolaan data, terutama antara front-end dan back-end, akan berjalan jauh lebih baik dan efisien. Hal ini didukung dengan fleksibilitas format data seperti XML dan JSON. Apabila suatu _platform_ tidak mengimplementasikan mekanisme ini, _platform_ tersebut tidak akan berfungsi secara maksimal karena data-data yang masuk tidak dapat dikelola dengan baik oleh berbagai komponen/bagian _platform_ tersebut.
@@ -523,8 +539,5 @@ Dengan mengimplementasikan `csrf_token`, setiap _request_ yang dilakukan oleh us
   ![](answer_image/Tugas3-GET-xml-UUID.png)
 - `GET /json/<UUID>`
   ![](answer_image/Tugas3-GET-json-UUID.png)
-
-</details>
-
 
 ## Tugas 4
