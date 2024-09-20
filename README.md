@@ -33,6 +33,7 @@ PWS Link : http://steven-setiawan-marquette.pbp.cs.ui.ac.id/
 
 <details>
 <summary>Membuat sebuah proyek Django baru</summary>
+
 Untuk membuat proyek Django baru, langkah pertama yang saya lakukan adalah membuat folder dengan nama proyek yang saya inginkan.
 
 Untuk melakukan itu, saya menjalankan command berikut:
@@ -75,10 +76,12 @@ python manage.py runserver
 ```
 
 Deployment berhasil dan dapat diakses melalui http://127.0.0.1:8000/
+
 </details>
 
 <details>
 <summary>Membuat aplikasi main pada proyek</summary>
+
 Setelah deployment berhasil dilakukan di local, saya membuat aplikasi `main` pada proyek dengan menjalankan:
 
 ```
@@ -102,6 +105,7 @@ INSTALLED_APPS = [
 
 <details>
 <summary>Membuat model pada aplikasi main</summary>
+
 Setelah melakukan routing agar dapat menjalankan aplikasi `main`, selanjutnya kita akan membuat model. Hal ini dilakukan dengan memodifikasi file `models.py` pada folder `main`. Berikut adalah kode yang saya tambahkan:
 
 ```py
@@ -123,6 +127,7 @@ Migration dilakukan untuk merefleksikan perubahan dalam model ke database schema
 
 <details>
 <summary>Membuat sebuah fungsi pada views.py</summary>
+
 Kemudian, saya membuat folder baru pada main dengan nama templates dan membuat file baru bernama main.html. main.html berfungsi sebagai display tampilan dari aplikasi main saya. Berikut adalah kode pada main.html saya:
 
 ```html
@@ -158,6 +163,7 @@ def show_main(request) :
 
 <details>
 <summary>Membuat routing pada urls.py aplikasi main</summary>
+
 Selanjutnya, saya melakukan konfigurasi routing urls.py agar aplikasi `main` dapat diakses melalui peramban ketika proyek dijalankan. Saya membuat file baru bernama `urls.py` pada direktori `main` dan menambahkan kode berikut:
 
 ```py
@@ -186,6 +192,7 @@ urlpatterns = [
 
 <details>
 <summary>Melakukan deployment ke PWS</summary>
+
 Setelah proyek berhasil dibuat, saya akan menyimpannya pada repository github serta mendeploynya pada PWS.
 
 - **GitHub**
@@ -250,6 +257,7 @@ Model pada Django disebut sebagai ORM (Object-Relational Mapping) dikarenakan Dj
 
 <details>
 <summary>Membuat input form untuk menambahkan objek model pada app sebelumnya</summary>
+
 Sebelum membuat input `form`, karena page utama dan form kita memiliki beberapa bagian kode yang sama, maka kita dapat membuat suatu templates umum untuk mengurangi pengulangan kode yang repetitif.
 Dalam mengimplementasikan hal tersebut, terlebih dahulu saya membuat direktori baru bernama `templates/` pada direktori utama dan mengisinya dengan berkas `base.html`. Berikut adalah isi dari `base.html`:
 
@@ -491,6 +499,7 @@ def show_json_by_id(request, id) :
 
 <details>
 <summary>Membuat routing URL untuk masing-masing views</summary>
+
 Untuk membuat routing URL dari masing-masing `views` tersebut, terlebih dahulu saya melakukan import views ke berkas `urls.py` di direktori `main/`.
 
 ```py
@@ -545,13 +554,362 @@ Dengan mengimplementasikan `csrf_token`, setiap _request_ yang dilakukan oleh us
 ## Implementasi Checklist Tugas 4
 <details>
 <summary>Mengimplementasikan fungsi registrasi, login, dan logout
+
+- **Registrasi**
+  Dalam mengimplementasikan fungsi registrasi, terlebih dahulu saya melakukan _import_ beberapa _library_ yang saya perlukan, seperti `UserCreationForm` dan `messages` pada berkas `views.py`. Berikut adalah kode yang saya tambahkan:
+
+  ```py
+  from django.contrib.auth.forms import UserCreationForm
+  from django.contrib import messages
+  ```
+
+  Setelah menambahkan _library_ tersebut, saya juga menambahkan fungsi register pada `views.py` yang berfungsi untuk membuat form registrasi secara otomatis serta membuat akun pengguna ketika form di-_submit_. Berikut adalah potongan kode yang saya tambahkan:
+
+  ```py
+  def register(request):
+    form = UserCreationForm()
+
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your account has been successfully created!')
+            return redirect('main:login')
+    context = {'form':form}
+    return render(request, 'register.html', context)
+  ```
+
+  Setelah itu, untuk menampilkan form registrasi, kita tambahkan berkas `register.html` pada direktori `main/templates`. Berikut adalah isi dari `register.html`:
+  
+  ```html
+  {% extends 'base.html' %}
+
+  {% block meta %}
+  <title>Register</title>
+  {% endblock meta %}
+
+  {% block content %}
+
+  <div class="login">
+    <h1>Register</h1>
+
+    <form method="POST">
+      {% csrf_token %}
+      <table>
+        {{ form.as_table }}
+        <tr>
+          <td></td>
+          <td><input type="submit" name="submit" value="Daftar" /></td>
+        </tr>
+      </table>
+    </form>
+
+    {% if messages %}
+    <ul>
+      {% for message in messages %}
+      <li>{{ message }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+  </div>
+
+  {% endblock content %}
+  ```
+
+  Kemudian, agar fungsi registrasi ini bisa digunakan, kita _import_ fungsi tersebut pada `urls.py` dan menambah _path url_-nya ke dalam `urlpatterns`. Berikut adalah kode yang saya tambahkan pada `urls.py`:
+
+  ```
+  from main.views import show_main, create_product, show_xml, show_json, show_xml_by_id, show_json_by_id, register
+  ...
+  urlpatterns = [
+    ...
+    path('register/', register, name='register'),
+  ]
+  ...
+  ```
+  Mekanisme `register` berhasil dibuat!
+
+- **Login**
+  Dalam mengimplementasikan fungsi login, sama seperti saat membuat fungsi registrasi, terlebih dahulu kita _import library-library_ yang diperlukan pada `views.py`. Berikut adalah kode yang saya tambahkan:
+  
+  ```py
+  from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+  from django.contrib.auth import authenticate, login  
+  ```
+
+  Selanjutnya, tambahkan fungsi `login_user` pada `views.py`. Fungsi ini akan berfungsi untuk melakukan autentikasi pengguna pada website kita. Apabila login berhasil, maka pengguna akan di-_redirect_ ke halaman utama kita. Berikut adalah kode yang saya tambahkan:
+  
+  ```py
+  def login_user(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(data=request.POST)
+
+        if form.is_valid():
+              user = form.get_user()
+              login(request, user)
+              return redirect('main:show_main')
+
+    else:
+        form = AuthenticationForm(request)
+    context = {'form': form}
+    return render(request, 'login.html', context)  
+  ```
+
+  Setelahnya, untuk menampilkan fungsi login tersebut, kita buat berkas baru bernama `login.html` pada direktori `main/templates`. Berikut adalah isi dari `login.html`:
+
+  ```html
+  {% extends 'base.html' %}
+
+  {% block meta %}
+  <title>Login</title>
+  {% endblock meta %}
+
+  {% block content %}
+  <div class="login">
+    <h1>Login</h1>
+
+    <form method="POST" action="">
+      {% csrf_token %}
+      <table>
+        {{ form.as_table }}
+        <tr>
+          <td></td>
+          <td><input class="btn login_btn" type="submit" value="Login" /></td>
+        </tr>
+      </table>
+    </form>
+
+    {% if messages %}
+    <ul>
+      {% for message in messages %}
+      <li>{{ message }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %} Don't have an account yet?
+    <a href="{% url 'main:register' %}">Register Now</a>
+  </div>
+
+  {% endblock content %}  
+  ```
+
+  Selanjutnya, kita _import_ fungsi login tersebut dan menambahkan _path url_ ke dalam `urlpatterns` pada `urls.py`. Berikut adalah kode yang saya tambahkan:
+  
+  ```py
+  from main.views import show_main, create_product, show_xml, show_json, show_xml_by_id, show_json_by_id, register, login_user
+  ...
+  urlpatterns = [
+    ...
+    path('login/', login_user, name='login'),
+  ]
+  ...
+  ```
+
+  Mekanisme login berhasil dibuat!
+
+- **Logout**
+  Terakhir, kita akan membuat fungsi logout. Seperti sebelumnya, terlebih dahulu kita lakukan _import library_ yang kita butuhkan pada `views.py`. Berikut adalah kode yang saya tambahkan:
+
+  ```py
+  from django.contrib.auth import authenticate, login, logout # Menambahkan logout
+  ```
+
+  Selanjutnya, kita tambahkan juga fungsi `logout_user` berikut pada `views.py`.
+
+  ```py
+  def logout_user(request):
+      logout(request)
+      return redirect('main:login')  
+  ```
+
+  Fungsi `logout_user` ini akan menerima _request_ dari user dan melakukan proses logout atau keluar dari sesi yang sedang berjalan. Nantinya setelah logout, user akan dialihkan ke halaman login.
+
+  Selanjutnya, untuk menampilkan tombol logout, kita tambahkan _hyperlink_ berikut pada berkas `main.html` di direktori `main/templates`:
+
+  ```html
+  ...
+  <a href="{% url 'main:logout' %}">
+    <button>Logout</button>
+  </a>
+  ...  
+  ```
+
+  Kemudian, kita _import_ fungsi tersebut dan menambahkan _path url_ ke dalam `urlpatterns` pada `urls.py`. Berikut adalah kode yang saya tambahkan:
+
+  ```py
+  from main.views import show_main, create_product, show_xml, show_json, show_xml_by_id, show_json_by_id, register, login_user, logout_user
+  ...
+  urlpatterns = [
+    ...
+    path('logout/', logout_user, name='logout'),
+  ]
+  ...
+  ```
+
+  Mekanisme logout berhasil dibuat!
+
+Selain ketiga mekanisme ini, diperlukan adanya restriksi akses bagi pengguna yang belum melakukan login. Hal ini dapat dilakukan dengan menambahkan kode berikut pada `views.py`:
+
+```py
+from django.contrib.auth.decorators import login_required
+...
+@login_required(login_url='/login')
+def show_main(request):
+...
+```
+
+Dengan menambahkan kode ini, halaman utama yang ditampilkan oleh fungsi show_main hanya dapat diakses oleh pengguna yang sudah melakukan login. Apabila pengguna belum login, maka mereka akan diminta untuk melakukan login pada _path url_ `/login` terlebih dahulu.
+
+Selain itu, karena kita ingin melakukan _deployment_, tentu kita perlu mempersiapkan website kita untuk _environtment production_. Untuk melakukan hal tersebut, saya melakukan modifikasi pada berkas `settings.py` di subdirektori `marquette`. Berikut adalah potongan kode yang saya tambahkan:
+```py
+...
+import os
+...
+PRODUCTION = os.getenv("PRODUCTION", False)
+DEBUG = not PRODUCTION
+...
+```
 </details>
 
-<details><summary>Menghubungkan model Product dengan User</summary></details>
+<details><summary>Menampilkan detail informasi pengguna yang sedang logged in</summary>
+
+Setiap pengguna yang berhasil logged in ke dalam website kita tentu harus memiliki datanya masing-masing yang berbeda dan tidak dapat diakses oleh pengguna lainnya. Dengan demikian, diperlukan suatu mekanisme yang dapat membedakan setiap pengguna pada Django. Hal ini dapat diimplementasikan dengan memanfaatkan _cookies_.
+
+Untuk mengimplementasikan _cookies_, terlebih dahulu kita melakukan _import library-library_ yang diperlukan pada berkas `views.py`. Berikut adalah kode yang saya tambahkan:
+
+```py
+import datetime
+from django.http import HttpResponse, HttpResponseRedirect
+from django.urls import reverse
+```
+
+Setelah melakukan _import library_, kita lakukan modifikasi pada fungsi `login_user`. Kita akan menambahkan `cookie` bernama `last_login` yang menyimpan waktu terakhir pengguna melakukan login. Berikut adalah fungsi `login_user` setelah mengalami modifikasi:
+
+```py
+def login_user(request):
+   if request.method == 'POST':
+      form = AuthenticationForm(data=request.POST)
+
+      if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            response = HttpResponseRedirect(reverse("main:show_main"))
+            response.set_cookie('last_login', str(datetime.datetime.now()))
+            return response
+
+   else:
+      form = AuthenticationForm(request)
+   context = {'form': form}
+   return render(request, 'login.html', context)
+```
+
+Setelahnya, kita modifikasi juga fungsi `show_main` dengan menambahkan key `last_login` yang nantinya akan ditampilkan melalui `main.html`. Berikut adalah hasil modifikasi `show_main`:
+
+```py
+@login_required(login_url='/login')
+def show_main(request) :
+    products = Product.objects.filter(user=request.user)
+
+    context = {
+        'app_name' : 'Marquette',
+        'name': request.user.username,
+        'class' : 'PBP D',
+        'products' : products,
+        'last_login': request.COOKIES['last_login'],
+    }
+    
+    return render(request, "main.html", context)
+```
+
+Kemudian, karena sebelumnya kita telah menambahkan `cookie` pada saat login, maka kita juga harus menghapusnya saat melakukan logout. Untuk melakukan hal tersebut, saya memodifikasi fungsi `logout_user`. Berikut adalah hasil modifikasinya:
+
+```py
+def logout_user(request):
+    logout(request)
+    response = HttpResponseRedirect(reverse('main:login'))
+    response.delete_cookie('last_login')
+    return response
+```
+
+Terakhir, saya menampilkan value dari `last_login` yang ada pada _context_ fungsi `show_main` dengan menambahkan kode berikut pada berkas `main.html`:
+
+```html
+...
+<h5>Sesi terakhir login: {{ last_login }}</h5>
+...
+```
+
+`cookies` berhasil diimplementasikan! Untuk mengecek data-data seperti `last_login`, `seessionid`, dan `csrftoken`, kita dapat memanfaatkan fitur _inspect elemen_ atau _developer tools_.
+
+Berikut adalah salah satu contoh hasil tampilan detail dari suatu pengguna:
+![](answer_image/Tugas4-Detail-Pengguna.png)
+
+Terlihat pada sisi kiri, `username` yang telah login dan `cookie` dengan nama `last_login` berhasil kita implementasikan. Selain itu, terdapat berbagai informasi seperti `csrftoken` dan `sessionid` pada bagian kanan tampilan.
+</details>
+
+<details><summary>Menghubungkan model Product dengan User</summary>
+
+Agar setiap pengguna memiliki objek `Product`-nya masing-masing serta hanya dapat melihat objek `Product`-nya sendiri, maka kita perlu menghubungkan model `Product` dengan `User`. Terlebih dahulu, kita tambahkan _import_ berikut pada berkas `models.py` di subdirektori `main`:
+
+```py
+...
+from django.contrib.auth.models import User
+...
+```
+
+Selanjutnya, kita lakukan modifikasi pada model `Product`. Berikut adalah hasil modifikasi saya:
+
+```py
+class Product(models.Model) :
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=255)
+    price = models.IntegerField()
+    description = models.TextField()
+```
+
+Dengan menambahkan _field_ `user` dan menginisalisasinya sebagai `ForeignKey`, maka kita telah berhasil menghubungkan `Product` dengan `User`, sehingga setiap objek `Product` hanya dimiliki oleh pengguna yang menambahkannya.
+
+Selanjutnya, kita perlu menyimpan nama pengguna yang membuat objek `Product` baru. Dengan demikian, kita perlu melakukan sedikit perubahan pada fungsi `create_product` di berkas `views.py`. Berikut adalah hasil modifikasi saya:
+
+```py
+def create_product(request) :
+    form = ProductForm(request.POST or None)
+
+    if form.is_valid() and request.method == "POST" :
+        product_entry = form.save(commit=False)
+        product_entry.user = request.user
+        product_entry.save()
+        return redirect('main:show_main')
+    
+    context = {'form' : form}
+    return render(request, "create_product.html", context)
+```
+
+Setelah itu, saya kembali memastikan bahwa _value_ dari field `name` pada _context_ di fungsi `show_main` telah menampilkan nama pengguna. Berikut adalah potongan kodenya:
+
+```py
+@login_required(login_url='/login')
+def show_main(request) :
+    products = Product.objects.filter(user=request.user)
+
+    context = {
+        'app_name' : 'Marquette',
+        'name': request.user.username,
+        ...
+    }
+```
+
+Setelah melakukan seluruh perubahan tersebut, selanjutnya agar perubahan `models` dapat tercatat, kita harus melakukan migrasi. Berikut adalah perintah yang saya jalankan:
+
+```
+python manage.py makemigrations
+python manage.py migrate
+```
+
+Model `Product` telah berhasil dihubungkan dengan `User`!
+</details>
 
 <details><summary>Membuat dua akun pengguna dengan masing-masing tiga dummy data</summary></details>
-
-<details><summary>Menampilkan detail informasi pengguna yang sedang logged in</summary></details>
 
 ## Apa perbedaan antara `HttpResponseRedirect()` dan `redirect()`
 ## Jelaskan cara kerja penghubungan model `Product` dengan `User`!
