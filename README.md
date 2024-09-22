@@ -706,7 +706,7 @@ Dengan mengimplementasikan `csrf_token`, setiap _request_ yang dilakukan oleh us
   ...
   ```
 
-  Mekanisme login berhasil dibuat!
+  Mekanisme `login` berhasil dibuat!
 
 - **Logout**
 
@@ -748,7 +748,7 @@ Dengan mengimplementasikan `csrf_token`, setiap _request_ yang dilakukan oleh us
   ...
   ```
 
-  Mekanisme logout berhasil dibuat!
+  Mekanisme `logout` berhasil dibuat!
 
 Selain ketiga mekanisme ini, diperlukan adanya restriksi akses bagi pengguna yang belum melakukan login. Hal ini dapat dilakukan dengan menambahkan kode berikut pada `views.py`:
 
@@ -912,9 +912,49 @@ python manage.py migrate
 Model `Product` telah berhasil dihubungkan dengan `User`!
 </details>
 
-<details><summary>Membuat dua akun pengguna dengan masing-masing tiga dummy data</summary></details>
+<details><summary>Membuat dua akun pengguna dengan masing-masing tiga dummy data</summary>
+
+Saat pertama kali kita membuka website, akan terlihat tampilan _login page_ seperti berikut:
+![](answer_image/Tugas4-Login-Page.png)
+
+Kita tekan tombol `Register Now`, maka kita akan dipindahkan ke _path_ `/register/`. Berikut adalah tampilan halaman registrasi:
+![](answer_image/Tugas4-Register-Page.png)
+
+Setelah melakukan registrasi, kita akan kembali ke halaman _login_. Kemudian, masukkan _username_ dan _password_ yang sebelumnya telah dibuat. Apabila login berhasil, maka kita akan dialihkan ke halaman utama. Berikut adalah tampilan halaman utama:
+![](answer_image/Tugas4-Main-Page.png)
+
+Kemudian, untuk membuat `product` baru, tekan tombol `Add New Product`. Masukkan data pada field `name`, `price`, dan `description`, kemudian tekan `Add Product`. Berikut adalah tampilan halaman `create-product`:
+![](answer_image/Tugas4-Creating-Dummy.png)
+
+Lakukan proses yang sama sebanyak tiga kali pada kedua akun pengguna. Berikut adalah hasilnya:
+![](answer_image/Tugas4-User1.png)
+![](answer_image/Tugas4-User1.png)
+
+Terlihat bahwa kedua pengguna memiliki dummy data yang berbeda. Ini mengindikasikan bahwa mekanisme _login_ serta penghubungan model `Product` dengan `User` kita telah berhasil.
+
+</details>
 
 ## Apa perbedaan antara `HttpResponseRedirect()` dan `redirect()`
+Perbedaan antara kedua _method_ ini terletak pada parameter yang dibutuhkan untuk menjalankannya. Pada `HttpResponseRedirect()`, _method_ membutuhkan URL yang lengkap sebagai parameter. Sedangkan, pada method `redirect`, parameter yang dibutuhkan lebih fleksibel. Method ini dapat menerima `models`, `views`, dan `url`. Nantinya, parameter ini akan dikonversi menjadi sebuah URL, lalu kemudian mengembalikan `HttpResponseRedirect()`.
+
 ## Jelaskan cara kerja penghubungan model `Product` dengan `User`!
+Dalam proyek yang telah kita buat, cara kerja penghubungan `Product` dengan `User` dapat dilihat pada saat kita membuat objek `Product` baru. Setiap kali seorang pengguna membuat entri `Product` baru, maka proyek akan secara langsung dikaitkan dan disimpan sebagai kepunyaan/milik dari pengguna tersebut. 
+
+Setiap objek `Product` akan memiliki seorang `user` yang bersifat One-to-Many (terlihat pada bagian `ForeignKey`), yaitu satu pengguna dapat memiliki lebih dari satu objek `Product`. Hal ini terlihat pada potongan kode `models.py` berikut:
+```py
+class Product(models.Model) :
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=255)
+    price = models.IntegerField()
+    description = models.TextField()
+```
+
 ## Apa perbedaan antara _authentication_ dan _authorization_, apakah yang dilakukan saat pengguna login? Jelaskan bagaimana Django mengimplementasikan kedua konsep tersebut.
+- **_Authentication_**
+  _Authentication_ adalah proses verifikasi identitas dari pengguna. Pada proyek ini, _authentication_ dilakukan melalui fungsi login.
+
+- **_Authorization_**
+  _Authorization_ adalah proses memberikan izin/_privilege_ atau kewenangan pada pengguna yang sudah terautentikasi untuk mengakses fungsi-fungsi atau bagian-bagian tertentu pada proyek yang telah kita buat.
+
 ## Bagaimana Django mengingat pengguna yang telah login? Jelaskan kegunaan lain dari _cookies_ dan apakah semua _cookies_ aman digunakan?
