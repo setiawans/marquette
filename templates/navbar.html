@@ -1,4 +1,4 @@
-<nav class="fixed shadow-lg top-0 left-0 z-50 w-screen" style="background-color: #e5a8b1;">
+<nav class="fixed shadow-lg top-0 left-0 z-50 w-screen" style="background-color: #ecbad0;">
     <div class="max-w-8xl ms-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
             <div class="flex items-center">
@@ -10,14 +10,14 @@
                     <span class="text-black mr-4">
                         Welcome, {{ user.username }}
                     </span>
-                    <a href="{% url 'main:logout' %}" class="text-center text-black bg-[#fcd7d7] hover:bg-[#edcfd3] font-bold px-5 py-2 rounded transition duration-400">
+                    <a href="{% url 'main:logout' %}" class="text-center text-white bg-[#c78ca0] hover:bg-[#d9a7a4] font-bold px-5 py-2 rounded transition duration-400">
                         Logout
                     </a>
                 {% else %}
-                    <a href="{% url 'main:login' %}" class="text-center text-black lbg-[#fcd7d7] hover:bg-[#edcfd3] font-bold px-5 py-2 rounded transition duration-400 mr-3">
+                    <a href="{% url 'main:login' %}" class="text-center text-white lbg-[#c78ca0] hover:bg-[#d9a7a4] font-bold px-5 py-2 rounded transition duration-400 mr-3">
                         Login
                     </a>
-                    <a href="{% url 'main:register' %}" class="text-center text-black bg-[#fcd7d7] hover:bg-[#edcfd3] font-bold px-5 py-2 rounded transition duration-400 mr-3">    
+                    <a href="{% url 'main:register' %}" class="text-center text-white bg-[#c78ca0] hover:bg-[#d9a7a4] font-bold px-5 py-2 rounded transition duration-400 mr-3">    
                         Register
                     </a>
                 {% endif %}
@@ -38,14 +38,14 @@
                 <span class="block text-black px-3 py-2">
                     Welcome, {{ user.username }}
                 </span>
-                <a href="{% url 'main:logout' %}" class="block text-center text-black bg-[#fcd7d7] hover:bg-[#edcfd3] font-bold px-4 py-2 rounded transition duration-300">
+                <a href="{% url 'main:logout' %}" class="block text-center text-white bg-[#c78ca0] hover:bg-[#d9a7a4] font-bold px-4 py-2 rounded transition duration-300">
                     Logout
                 </a>
             {% else %}
-                <a href="{% url 'main:login' %}" class="block text-center text-black bg-[#fcd7d7] hover:bg-[#edcfd3] font-bold px-4 py-2 rounded transition duration-300 mb-2">
+                <a href="{% url 'main:login' %}" class="block text-center text-white bg-[#c78ca0] hover:bg-[#d9a7a4] font-bold px-4 py-2 rounded transition duration-300 mb-2">
                     Login
                 </a>
-                <a href="{% url 'main:register' %}" class="block text-center text-black bg-[#fcd7d7] hover:bg-[#edcfd3] font-bold px-4 py-2 rounded transition duration-300">
+                <a href="{% url 'main:register' %}" class="block text-center text-white bg-[#c78ca0] hover:bg-[#d9a7a4] font-bold px-4 py-2 rounded transition duration-300">
                     Register
                 </a>
             {% endif %}

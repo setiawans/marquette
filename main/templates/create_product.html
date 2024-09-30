@@ -8,7 +8,7 @@
 <div class="min-h-screen flex items-center justify-center w-screen bg-gradient-to-br from-[#ffe1ed] to-[#ffc6d9] px-4 py-12 sm:px-6 lg:px-8">
   <div class="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg">
     <div>
-      <h2 class="mt-6 text-center text-gray-900 text-3xl font-extrabold">
+      <h2 class="mt-6 text-center text-gray-900 text-3xl font-extrabold satisfy-regular">
         Create Product
       </h2>
     </div>
@@ -19,24 +19,24 @@
           <label for="name" class="block text-sm font-medium text-gray-700 mb-1">
             Name
           </label>
-          <input type="text" name="name" id="name" class="appearance-none rounded-lg relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm">
+          <input type="text" name="name" id="name" required class="appearance-none rounded-lg relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm">
         </div>
         <div>
           <label for="price" class="block text-sm font-medium text-gray-700 mb-1">
             Price
           </label>
-          <input type="number" name="price" id="price" class="appearance-none rounded-lg relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm">
+          <input type="number" name="price" id="price" required class="appearance-none rounded-lg relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm">
         </div>
         <div>
           <label for="description" class="block text-sm font-medium text-gray-700 mb-1">
             Description
           </label>
-          <textarea name="description" id="description" rows="5" class="appearance-none rounded-lg relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"></textarea>
+          <textarea name="description" id="description" rows="5" required class="appearance-none rounded-lg relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"></textarea>
         </div>
       </div>
 
       <div>
-        <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-black bg-[#c78ca0] hover:bg-[#d9a7a4] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out">
+        <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-[#c78ca0] hover:bg-[#d9a7a4] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out">
           Create Product
         </button>
       </div>

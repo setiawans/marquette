@@ -27,6 +27,13 @@ PWS Link : http://steven-setiawan-marquette.pbp.cs.ui.ac.id/
   - [Apa perbedaan antara _authentication_ dan _authorization_](#apa-perbedaan-antara-authentication-dan-authorization-apakah-yang-dilakukan-saat-pengguna-login-jelaskan-bagaimana-django-mengimplementasikan-kedua-konsep-tersebut)
   - [Bagaimana Django mengingat pengguna yang telah login?](#bagaimana-django-mengingat-pengguna-yang-telah-login-jelaskan-kegunaan-lain-dari-cookies-dan-apakah-semua-cookies-aman-digunakan)
 
+- [README.md Tugas 5](#tugas-5)
+  - [Implementasi Checklist Tugas 5]
+  - [Jelaskan urutan prioritas pengambilan CSS selector]
+  - [Mengapa _responsive design_ menjadi konsep yang penting dalam pengembangan aplikasi web]
+  - [Jelaskan perbedaan antara _margin, border,_ dan _padding_]
+  - [Jelaskan konsep _flex box_ dan _grid layout_ beserta kegunaannya]
+
 ## Tugas 2
 
 ## Implementasi Checklist Tugas 2.
@@ -963,3 +970,13 @@ Untuk mengingat pengguna yang telah melalui proses login, Django memanfaatkan me
 Selain untuk mengingat dan membedakan pengguna yang telah login, _cookies_ juga dapat digunakan untuk menyimpan aktivitas yang telah dilakukan oleh pengguna, contohnya saja fitur penyimpanan `Cart` atau keranjang belanja pada platform e-commerce. Selain itu, _cookies_ juga dapat digunakan untuk menyimpan kustomisasi atau preferensi pengguna, sehingga pengguna tidak perlu melakukan kustomisasi berulang kali setiap melakukan tindakan login. Beberapa fitur lainnya seperti `Remember me` juga memanfaatkan _cookies_ ini.
 
 Walaupun _cookies_ memiliki banyak manfaat, tetapi masih terdapat berbagai celah keamanan di dalamnya. Berdasarkan hasil pengamatan hingga saat ini, tidak semua _cookies_ aman untuk digunakan. Ada beberapa _vulnerability_ yang rawan terjadi, salah satunya adalah _session hijacking_. _Cookies_ yang tidak dibuat dan dilindungi dengan baik rentan untuk dicuri oleh pihak tidak bertanggung jawab untuk mengambil alih akun pengguna tersebut. Selain itu, _cookie_ juga rentan terhadap serangan XSS (Cross-Site Scripting) apabila mekanisme penerimaan query input pada website tidak diatur dengan baik serta MitM (Man-in-the-Middle Attack) jika koneksi pada website tidak memanfaatkan protokol HTTPS.
+
+## Implementasi Checklist Tugas 5.
+
+## Jika terdapat beberapa CSS selector untuk suatu elemen HTML, jelaskan urutan prioritas pengambilan CSS selector tersebut!
+
+## Mengapa responsive design menjadi konsep yang penting dalam pengembangan aplikasi web? Berikan contoh aplikasi yang sudah dan belum menerapkan responsive design!
+
+## Jelaskan perbedaan antara margin, border, dan padding, serta cara untuk mengimplementasikan ketiga hal tersebut!
+
+## Jelaskan konsep flex box dan grid layout beserta kegunaannya!
