@@ -1,0 +1,62 @@
+<nav class="fixed shadow-lg top-0 left-0 z-50 w-screen" style="background-color: #e5a8b1;">
+    <div class="max-w-8xl ms-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+            <div class="flex items-center">
+                <h1 class="text-3xl text-center text-black satisfy-regular">marquette</h1>
+            </div>
+
+            <div class="md:flex items-center hidden">
+                {% if user.is_authenticated %}
+                    <span class="text-black mr-4">
+                        Welcome, {{ user.username }}
+                    </span>
+                    <a href="{% url 'main:logout' %}" class="text-center text-black bg-[#fcd7d7] hover:bg-[#edcfd3] font-bold px-5 py-2 rounded transition duration-400">
+                        Logout
+                    </a>
+                {% else %}
+                    <a href="{% url 'main:login' %}" class="text-center text-black lbg-[#fcd7d7] hover:bg-[#edcfd3] font-bold px-5 py-2 rounded transition duration-400 mr-3">
+                        Login
+                    </a>
+                    <a href="{% url 'main:register' %}" class="text-center text-black bg-[#fcd7d7] hover:bg-[#edcfd3] font-bold px-5 py-2 rounded transition duration-400 mr-3">    
+                        Register
+                    </a>
+                {% endif %}
+            </div>
+            <div class="md:hidden flex items-center">
+                <button class="mobile-menu-button">
+                    <svg class="w-6 h-6 text-black" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+                        <path d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="mobile-menu hidden md:hidden px-4 w-full md:max-w-full">
+        <div class="pt-2 pb-3 space-y-1 mx-auto">
+            {% if user.is_authenticated %}
+                <span class="block text-black px-3 py-2">
+                    Welcome, {{ user.username }}
+                </span>
+                <a href="{% url 'main:logout' %}" class="block text-center text-black bg-[#fcd7d7] hover:bg-[#edcfd3] font-bold px-4 py-2 rounded transition duration-300">
+                    Logout
+                </a>
+            {% else %}
+                <a href="{% url 'main:login' %}" class="block text-center text-black bg-[#fcd7d7] hover:bg-[#edcfd3] font-bold px-4 py-2 rounded transition duration-300 mb-2">
+                    Login
+                </a>
+                <a href="{% url 'main:register' %}" class="block text-center text-black bg-[#fcd7d7] hover:bg-[#edcfd3] font-bold px-4 py-2 rounded transition duration-300">
+                    Register
+                </a>
+            {% endif %}
+        </div>
+    </div>
+    <script>
+        const btn = document.querySelector(".mobile-menu-button");
+        const menu = document.querySelector(".mobile-menu");
+
+        btn.addEventListener("click", () => {
+            menu.classList.toggle("hidden");
+        });
+    </script>
+</nav>

@@ -1,44 +1,42 @@
 {% extends 'base.html' %}
+{% load static %}
+
 {% block meta %}
-<title>{{ app_name }}</title>
+<title>marquette</title>
 {% endblock meta %}
 
 {% block content %}
-<h1>Welcome to {{ app_name }}</h1>
-<h2>We're selling all Coquette items y'all ever need!</h2>
-<h4>Made by {{ name }} from {{ class }} class</h4>
-
-{% if not products %}
-<p>Belum ada data product pada Marquette.</p>
-{% else %}
-<table>
-    <tr>
-        <th>Product Name</th>
-        <th>Price</th>
-        <th>Description</th>
-    </tr>
-
-    {% comment %} Berikut cara memperlihatkan data product di bawah baris ini
-    {% endcomment %}
-    {% for product in products %}
-    <tr>
-        <td>{{product.name}}</td>
-        <td>{{product.price}}</td>
-        <td>{{product.description}}</td>
-    </tr>
-    {% endfor %}
-</table>
-{% endif %}
-
-<br />
-<a href="{% url 'main:create_product' %}">
-    <button>Add New Product</button>
-</a>
-
-<a href="{% url 'main:logout' %}">
-  <button>Logout</button>
-</a>
-
-<h5>Sesi terakhir login: {{ last_login }}</h5>
-
+{% include 'navbar.html' %}
+<div class="overflow-x-hidden px-4 md:px-8 pb-8 pt-24 min-h-screen bg-gradient-to-br from-[#ffe1ed] to-[#ffc6d9] flex flex-col">
+  <div class="mx-auto w-full space-y-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {% include "card_info.html" with title='Name' value=name %}
+      {% include "card_info.html" with title='Class' value=class %}
+    </div>
+    
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-4 sm:space-y-0 sm:space-x-4">
+      <div class="bg-[#c78ca0] text-white rounded-lg py-2 px-4 w-full sm:w-auto">
+        <h1 class="text-sm text-center">Last Login: {{last_login}}</h1>
+      </div>
+      <a href="{% url 'main:create_product' %}" class="bg-[#c78ca0] hover:bg-[#d9a7a4] text-white font-medium py-2 px-4 rounded-lg transition duration-300 ease-in-out w-full sm:w-auto text-center">
+        Add New Product
+      </a>
+    </div>
+    
+    <div class="bg-white rounded-xl shadow-lg p-6">
+      {% if not products %}
+      <div class="flex flex-col items-center justify-center min-h-[24rem]">
+        <img src="{% static 'image/sedih-banget.png' %}" alt="Sad face" class="w-32 h-32 mb-4"/>
+        <p class="text-center text-gray-600 mt-4">Belum ada data Product pada marquette.</p>
+      </div>
+      {% else %}
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+        {% for product in products %}
+          {% include 'card_product.html' with product=product %}
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
 {% endblock content %}
