@@ -973,7 +973,236 @@ Walaupun _cookies_ memiliki banyak manfaat, tetapi masih terdapat berbagai celah
 
 ## Implementasi Checklist Tugas 5.
 
+<details>
+<summary>Implementasi fungsi edit dan hapus Product</summary>
+
+Sebelum mengimplementasikan fungsi edit dan hapus ini, kita harus melakukan _import library_ berikut pada `views.py`:
+
+```py
+from django.shortcuts import render, redirect, reverse
+from django.http import HttpResponse, HttpResponseRedirect
+```
+
+- **Edit**
+
+  Untuk menambahakan fungsi edit, pertama-tama kita tambahkan potongan kode berikut pada `views.py`:
+  
+  ```py
+  def edit_product(request, id) :
+    product = Product.objects.get(pk=id)
+    form = ProductForm(request.POST or None, instance=product)
+    
+    if form.is_valid() and request.method == "POST" :
+        form.save()
+        return HttpResponseRedirect(reverse('main:show_main'))
+    
+    context = {'form': form}
+    return render(request, "edit_product.html", context)
+  ```
+
+  Setelah itu, kita tambahkan berkas `edit_product.html`. Untuk isinya, akan dibahas lebih lanjut pada step berikutnya.
+
+  Kemudian, kita lakukan _import_ fungsi `edit_product` serta menambahkan _path url_ ke dalam `urlpatterns` pada berkas `urls.py` di direktori `main`. Berikut adalah potongan kodenya:
+
+  ```py
+  from main.views import edit_product
+  ...
+  path('edit-product/<uuid:id>', edit_product, name='edit_product'),
+  ...
+  ```
+
+- **Delete**
+
+  Untuk menambahkan fungsi hapus atau _delete_, pertama-tama kita tambahkan potongan kode berikut pada berkas `views.py`:
+
+  ```py
+  def delete_product(request, id) :
+    product = Product.objects.get(pk=id)
+    product.delete()
+    return HttpResponseRedirect(reverse('main:show_main'))
+  ```
+
+  Setelah itu, kita lakukan _import_ fungsi `delete_product` dan menambahkan _path url_ ke dalam `urlpatterns` pada berkas `urls.py` di direktori `main`. Berikut adalah potongan kodenya:
+
+  ```py
+  from main.views import delete_product
+  ...
+  path('delete-product/<uuid:id>', delete_product, name='delete_product'),
+  ...
+  ```
+
+  Setelah itu, tambahkan button `edit` dan `delete` pada masing-masing `card-product` yang akan diimplementasikan selanjutnya. Namun, secara garis besar, berikut adalah potongan kode untuk menampilkan _button_ tersebut:
+
+  ```py
+  ...
+  <tr>
+      ...
+      <td>
+          <a href="{% url 'main:edit_mood' mood_entry.pk %}">
+              <button>
+                  Edit
+              </button>
+          </a>
+      </td>
+      <td>
+          <a href="{% url 'main:delete_mood' mood_entry.pk %}">
+              <button>
+                  Delete
+              </button>
+          </a>
+      </td>
+  </tr>
+  ...
+  ```
+</details>
+
+<details>
+<summary>Melakukan Kustomisasi Design menggunakan Tailwind CSS</summary>
+
+Sebelum melakukan kustomisasi website yang telah kita buat, terlebih dahulu kita harus menambahkan Tailwind CSS pada berkas `templates/base.html` kita. Berikut adalah potongan kode yang saya tambahkan:
+
+```html
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% block meta %} {% endblock meta %}
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body>
+    {% block content %} {% endblock content %}
+  </body>
+</html>
+```
+
+Selanjutnya, kita lakukan konfigurasi _Static Files_ pada aplikasi website kita, yaitu dengan menambahkan potongan kode berikut di `settings.py`:
+
+```py
+...
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+    ...
+]
+...
+STATIC_URL = '/static/'
+if DEBUG:
+    STATICFILES_DIRS = [
+        BASE_DIR / 'static'
+    ]
+else:
+    STATIC_ROOT = BASE_DIR / 'static'
+...
+```
+
+Kemudian, karena saya ingin menggunakan font dari Google Font, saya menambahkan potongan kode berikut pada `base.html`:
+```html
+...
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Satisfy&display=swap');
+</style>
+<link rel="stylesheet" href="{% static 'css/global.css' %}"/>
+...
+```
+
+Lalu, saya juga membuat file `global.css` pada direktori `static/css` dengan isi sebagai berikut:
+
+```css
+.satisfy-regular {
+    font-family: "Satisfy", cursive;
+    font-weight: 400;
+    font-style: normal;
+}
+```
+
+Selanjutnya, setelah menambahkan konfigurasi-konfigurasi tersebut, saya melakukan modifikasi pada berkas `login.html`, `register.html`, `create_product`, dan `edit_product` agar terlihat lebih menarik.
+
+Tidak lupa juga, untuk menampilkan objek Product yang telah dibuat, saya menambahkan satu berkas baru bernama `card_product.html`. Sehingga, setiap kali objek Product dibuat, tampilannya akan mengikuti berkas html ini.
+
+Setelahnya, saya juga menambahkan berkas `card_info.html` untuk menampilkan info pengguna yang sedang _login_ dan memasukkannya ke dalam berkas `main.html`.
+
+Semua berkas html ini dibuat dengan memanfaatkan Tailwind CSS sehingga menjadi _responsive_ dan dapat digunakan pada _device_ manapun.
+
+Terakhir, saya juga menambahkan `navbar.html`, sehingga pengguna dapat dengan mudah berganti _section_ yang mereka inginkan.
+</details>
+
 ## Jika terdapat beberapa CSS selector untuk suatu elemen HTML, jelaskan urutan prioritas pengambilan CSS selector tersebut!
+
+Jika terdapat beberapa CSS selector untuk suatu elemen HTML, berikut adalah urutan prioritasnya dari yang tertinggi hingga terendah:
+
+1. **Inline Style**
+   Selector ini memiliki prioritas tertinggi dan langsung diaplikasikan menggunakan atribut `style`.
+
+2. **ID Selectors**
+   Selector ini memiliki prioritas tertinggi kedua, biasanya dapat diidentifikasi dengan menggunakan atribut `id` dari suatu elemen.
+
+3. **Classes dan Pseudo-classes**
+   Selector ini berada pada posisi ketiga yang biasanya digunakan pada nama `class` maupun `pseudo-classes`.
+
+4. **Attributes**
+   Selecctor ini berada pada posisi keempat yang biasanya digunakan pada atribut-atribut html.
+
+5. **Elements dan Pseudo-elements**
+   Selector ini berada pada posisi terendah yang biasanya digunakan pada elemen-elemen serta pseudo-element dari HTML.
+
+Berikut adalah contoh dari urutan prioritas CSS tersebut:
+
+```html
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style type="text/css">
+        h1 {
+            background-color: red;
+            color: white;
+        }
+
+        #second {
+            background-color: black;
+            color: white;
+        }
+
+        .third {
+            background-color: pink;
+            color: blue;
+        }
+
+        #second1 {
+            color: blue;
+        }
+
+        .third1 {
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 id="second" class="third">
+        ID has second highest priority.
+    </h1>
+    <h1>
+        Element selectors has lowest priority.
+    </h1>
+    <h1 class="third">
+        Classes have higher priority
+        than element selectors.
+    </h1>
+
+    <h2 style="color: green;" 
+        id="second1"
+        class="third1">
+        Inline CSS has highest priority.
+      </h2>
+</body>
+
+</html>
+```
+
+Referensi: [GeeksForGeeks](https://www.geeksforgeeks.org/css-specificity/)
 
 ## Mengapa responsive design menjadi konsep yang penting dalam pengembangan aplikasi web? Berikan contoh aplikasi yang sudah dan belum menerapkan responsive design!
 
