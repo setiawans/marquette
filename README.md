@@ -28,11 +28,11 @@ PWS Link : http://steven-setiawan-marquette.pbp.cs.ui.ac.id/
   - [Bagaimana Django mengingat pengguna yang telah login?](#bagaimana-django-mengingat-pengguna-yang-telah-login-jelaskan-kegunaan-lain-dari-cookies-dan-apakah-semua-cookies-aman-digunakan)
 
 - [README.md Tugas 5](#tugas-5)
-  - [Implementasi Checklist Tugas 5]
-  - [Jelaskan urutan prioritas pengambilan CSS selector]
-  - [Mengapa _responsive design_ menjadi konsep yang penting dalam pengembangan aplikasi web]
-  - [Jelaskan perbedaan antara _margin, border,_ dan _padding_]
-  - [Jelaskan konsep _flex box_ dan _grid layout_ beserta kegunaannya]
+  - [Implementasi Checklist Tugas 5](#implementasi-checklist-tugas-5)
+  - [Jelaskan urutan prioritas pengambilan CSS selector](#jika-terdapat-beberapa-css-selector-untuk-suatu-elemen-html-jelaskan-urutan-prioritas-pengambilan-css-selector-tersebut)
+  - [Mengapa _responsive design_ menjadi konsep yang penting dalam pengembangan aplikasi web](#mengapa-responsive-design-menjadi-konsep-yang-penting-dalam-pengembangan-aplikasi-web-berikan-contoh-aplikasi-yang-sudah-dan-belum-menerapkan-responsive-design)
+  - [Jelaskan perbedaan antara _margin, border,_ dan _padding_](#jelaskan-perbedaan-antara-margin-border-dan-padding-serta-cara-untuk-mengimplementasikan-ketiga-hal-tersebut)
+  - [Jelaskan konsep _flex box_ dan _grid layout_ beserta kegunaannya](#jelaskan-konsep-flex-box-dan-grid-layout-beserta-kegunaannya)
 
 ## Tugas 2
 
