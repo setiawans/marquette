@@ -971,6 +971,8 @@ Selain untuk mengingat dan membedakan pengguna yang telah login, _cookies_ juga 
 
 Walaupun _cookies_ memiliki banyak manfaat, tetapi masih terdapat berbagai celah keamanan di dalamnya. Berdasarkan hasil pengamatan hingga saat ini, tidak semua _cookies_ aman untuk digunakan. Ada beberapa _vulnerability_ yang rawan terjadi, salah satunya adalah _session hijacking_. _Cookies_ yang tidak dibuat dan dilindungi dengan baik rentan untuk dicuri oleh pihak tidak bertanggung jawab untuk mengambil alih akun pengguna tersebut. Selain itu, _cookie_ juga rentan terhadap serangan XSS (Cross-Site Scripting) apabila mekanisme penerimaan query input pada website tidak diatur dengan baik serta MitM (Man-in-the-Middle Attack) jika koneksi pada website tidak memanfaatkan protokol HTTPS.
 
+## Tugas 5
+
 ## Implementasi Checklist Tugas 5.
 
 <details>
@@ -1133,18 +1135,23 @@ Terakhir, saya juga menambahkan `navbar.html`, sehingga pengguna dapat dengan mu
 Jika terdapat beberapa CSS selector untuk suatu elemen HTML, berikut adalah urutan prioritasnya dari yang tertinggi hingga terendah:
 
 1. **Inline Style**
+   
    Selector ini memiliki prioritas tertinggi dan langsung diaplikasikan menggunakan atribut `style`.
 
 2. **ID Selectors**
+   
    Selector ini memiliki prioritas tertinggi kedua, biasanya dapat diidentifikasi dengan menggunakan atribut `id` dari suatu elemen.
 
 3. **Classes dan Pseudo-classes**
+   
    Selector ini berada pada posisi ketiga yang biasanya digunakan pada nama `class` maupun `pseudo-classes`.
 
 4. **Attributes**
-   Selecctor ini berada pada posisi keempat yang biasanya digunakan pada atribut-atribut html.
+   
+   Selector ini berada pada posisi keempat yang biasanya digunakan pada atribut-atribut html.
 
 5. **Elements dan Pseudo-elements**
+   
    Selector ini berada pada posisi terendah yang biasanya digunakan pada elemen-elemen serta pseudo-element dari HTML.
 
 Berikut adalah contoh dari urutan prioritas CSS tersebut:
@@ -1206,6 +1213,34 @@ Referensi: [GeeksForGeeks](https://www.geeksforgeeks.org/css-specificity/)
 
 ## Mengapa responsive design menjadi konsep yang penting dalam pengembangan aplikasi web? Berikan contoh aplikasi yang sudah dan belum menerapkan responsive design!
 
+Alasan dibalik pentingnya _responsive design_ dari aplikasi website yang kita buat adalah target pasar dari aplikasi itu sendiri. Mengingat setiap pengguna belum tentu memiliki _device_ atau perangkat yang sama dengan yang kita miliki, maka tentu untuk mengakomodasi perbedaan tersebut, kita perlu membuat aplikasi web yang dapat menyesuaikan tampilannya dengan dimensi perangkat yang digunakan oleh pengguna.
+
+Aplikasi-aplikasi yang sudah _responsive_ dapat dengan mudah kita temui pada website yang kita gunakan sehari-hari, seperti Youtube, Twitter, Instagram, LinkedIn, dan masih banyak lagi. Kemudian, untuk aplikasi yang belum _responsive_ dapat kita lihat pada SIAKNG. Ketika kita menggunakan SIAKNG dari perangkat _mobile_, maka tampilannya masih menggunakan tampilan browser pada perangkat seperti PC maupun laptop, yang tentu sangat tidak nyaman untuk digunakan.
+
 ## Jelaskan perbedaan antara margin, border, dan padding, serta cara untuk mengimplementasikan ketiga hal tersebut!
 
+- **Margin**
+
+   `margin` merupakan ruang yang berada di luar elemen yang memisahkan satu elemen dengan elemen lainnya. Kita dapat mengatur `margin` sisi atas, bawah, kiri, maupun kanan dari elemen yang kita inginkan. Untuk mengimplementasikan `margin`, kita dapat menuliskan kode seperti `margin-top: 12px;`, yang berfungsi untuk memberikan `margin` dengan elemen di atasnya sebesar 12px.
+
+- **Border**
+
+   `border` merupakan garis yang mengelilingi elemen dan berfungsi untuk memberikan batas yang dapat diliat secara visual oleh pengguna. `border` dapat dikustomisasi, baik itu garis, warna, maupun gayanya. Berikut adalah salah satu contoh pengimplementasian `border`, yaitu `border: 5px solid red;` yang akan membuat border di sekitar elemen dengan ketebalan 5px, _style_ garis _solid_ (tidak terputus), dan berwarna merah.
+
+- **Padding**
+
+   `padding` merupakan ruang yang berada di dalam elemen, antara konten yang kita miliki dengan border. Mirip dengan `margin`, kita dapat mengimplementasikan `padding` untuk berbagai sisi elemen, seperti `padding-bottom: 25px`, yang berfungsi memberikan `padding` antara bagian bawah elemen dengan border sebesar 25px.
+
 ## Jelaskan konsep flex box dan grid layout beserta kegunaannya!
+
+Secara umum, `flex box` dan `grid layout` merupakan metode yang digunakan untuk mengatur tata letak elemen maupun kontainer yang memudahkan pengimplementasian _responsive design website_.
+
+- **Flex Box**
+
+  `Flex Box` berfokus pada penataan elemen satu dimensi, baik itu satu baris horizontal maupun satu kolom vertikal. `Flex Box` memudahkan kita dalam mengatur ruang serta elemen dalam suatu kontainer secara otomatis.
+
+- **Grid Layout**
+
+  `Grid Layout` berfokus pada penataan elemen dua dimensi, sehingga memungkinkan pengaturan baris serta kolom secara sekaligus. `Grid Layout` memudahkan kita dalam mengatur ruang serta elemen ketika bekerja dalam suatu `grid`.
+
+Dalam pemanfaatannya, `Flex Box` lebih sering digunakan dalam bagian-bagian satu dimensi seperti Navigation Bar (NavBar), sedangkan `Grid Layout` lebih sering diimplementasikan pada bento dashboard yang memerlukan tata letak dua dimensi untuk elemen-elemen di dalamnya.
