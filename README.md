@@ -1189,20 +1189,19 @@ Berikut adalah contoh dari urutan prioritas CSS tersebut:
 
 <body>
     <h1 id="second" class="third">
-        ID has second highest priority.
+        Prioritas selector ID tertinggi kedua.
     </h1>
     <h1>
-        Element selectors has lowest priority.
+        Selector element memiliki prioritas terendah.
     </h1>
     <h1 class="third">
-        Classes have higher priority
-        than element selectors.
+        Selector untuk classes lebih tinggi prioritasnya dibandingkan selector elemen.
     </h1>
 
     <h2 style="color: green;" 
         id="second1"
         class="third1">
-        Inline CSS has highest priority.
+        Inline CSS memiliki prioritas tertinggi.
       </h2>
 </body>
 
