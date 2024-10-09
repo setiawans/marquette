@@ -7,6 +7,9 @@ from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.core import serializers
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+from django.utils.html import strip_tags
 from main.forms import ProductForm
 from main.models import Product
 
@@ -68,6 +71,28 @@ def create_product(request) :
     
     context = {'form' : form}
     return render(request, "create_product.html", context)
+
+@csrf_exempt
+@require_POST
+def create_ajax(request) :
+    user = request.user
+    name = strip_tags(request.POST.get('name'))    
+    price = strip_tags(request.POST.get('price'))
+    description = strip_tags(request.POST.get('description'))
+    
+    new_product = Product(
+        user = user,
+        name = name,
+        price = price,
+        description = description
+    )
+    
+    if (not name.strip() or not price.strip() or not description.strip()) :
+        return HttpResponse(b"BAD REQUEST", status = 400)
+    else :
+        new_product.save()
+    
+    return HttpResponse(b"CREATED", status = 201)
 
 def edit_product(request, id) :
     product = Product.objects.get(pk=id)

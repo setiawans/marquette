@@ -34,6 +34,13 @@ PWS Link : http://steven-setiawan-marquette.pbp.cs.ui.ac.id/
   - [Jelaskan perbedaan antara _margin, border,_ dan _padding_](#jelaskan-perbedaan-antara-margin-border-dan-padding-serta-cara-untuk-mengimplementasikan-ketiga-hal-tersebut)
   - [Jelaskan konsep _flex box_ dan _grid layout_ beserta kegunaannya](#jelaskan-konsep-flex-box-dan-grid-layout-beserta-kegunaannya)
 
+- [README.md Tugas 6](#tugas-6)
+  - [Implementasi Checklist Tugas 6]
+  - [Jelaskan manfaat dari penggunaan JavaScript dalam pengembangan aplikasi web]
+  - [Jelaskan fungsi dari penggunaan await saat menggunakan fetch()]
+  - [Mengapa kita perlu menggunakan decorator csrf_exempt?]
+  - [Mengapa pembersihan input tidak dilakukan di frontend saja?]
+
 ## Tugas 2
 
 ## Implementasi Checklist Tugas 2.
@@ -1243,3 +1250,377 @@ Secara umum, `flex box` dan `grid layout` merupakan metode yang digunakan untuk 
   `Grid Layout` berfokus pada penataan elemen dua dimensi, sehingga memungkinkan pengaturan baris serta kolom secara sekaligus. `Grid Layout` memudahkan kita dalam mengatur ruang serta elemen ketika bekerja dalam suatu `grid`.
 
 Dalam pemanfaatannya, `Flex Box` lebih sering digunakan dalam bagian-bagian satu dimensi seperti Navigation Bar (NavBar), sedangkan `Grid Layout` lebih sering diimplementasikan pada bento dashboard yang memerlukan tata letak dua dimensi untuk elemen-elemen di dalamnya.
+
+## Tugas 6
+
+## Implementasi Checklist Tugas 6.
+<details>
+<summary>Implementasi AJAX GET</summary>
+
+Dalam mengimplementasikan AJAX `GET`, kita harus melakukan beberapa perubahan kode pada berkas `views.py`. Berikut adalah potongan kode yang saya modifikasi:
+
+```py
+...
+@login_required(login_url='/login')
+def show_main(request) :
+    context = { # Menghapus field mood_entries
+        'app_name' : 'marquette',
+        'name': request.user.username,
+        'class' : 'PBP D',
+        'last_login': request.COOKIES['last_login'],
+    }
+    
+    return render(request, "main.html", context)
+...
+
+def show_xml(request) :
+    data = Product.objects.filter(user=request.user) # Perubahan disini
+    return HttpResponse(serializers.serialize("xml", data), content_type="application/xml")
+
+def show_json(request) :
+    data = Product.objects.filter(user=request.user) # Perubahan disini
+    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+```
+
+Setelah itu, kita lakukan modifikasi pada berkas `main.html` seperti berikut:
+
+```html
+...
+<div id="product_cards"></div>
+...
+<script>
+  async function getProductEntries() {
+    return fetch("{% url 'main:show_json' %}").then((res) => res.json());
+  }
+
+  async function refreshProductEntries() {
+    document.getElementById("product_cards").innerHTML = "";
+    document.getElementById("product_cards").className = "";
+    const productEntries = await getProductEntries();
+
+    let htmlString = "";
+    let classNameString = "";
+
+    if (productEntries.length == 0) {
+      classNameString = "flex flex-col items-center justify-center min-h-[24rem] p-6";
+      htmlString = `
+      <div class="flex flex-col items-center justify-center min-h-[24rem]">
+        <img src="{% static 'image/no_product.png' %}" alt="No Product" class="w-32 h-32 mb-4"/>
+        <p class="text-center text-gray-600 mt-4">Belum ada data Product pada marquette.</p>
+      </div>
+      `;
+    } else {
+      classNameString = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full";
+      productEntries.forEach((item) => {
+        const name = DOMPurify.sanitize(item.fields.name);
+        const price = DOMPurify.sanitize(item.fields.price);
+        const description = DOMPurify.sanitize(item.fields.description);
+        htmlString += `
+        <div class="relative bg-white shadow-md rounded-lg overflow-hidden border border-[#ffc6d9] h-80">
+          <div class="bg-[#ffe1ed] text-gray-800 p-4 border-b border-[#ffc6d9]">
+            <h3 class="font-bold text-xl mb-2 text-[#ff6b9d] truncate">${name}</h3>
+            <p class="product-price text-gray-600 font-bold" data-price="${price}"></p>
+          </div>
+          <div class="p-4 max-h-40 overflow-y-auto">
+            <p class="font-semibold text-lg mb-2 text-[#ff6b9d]">Description</p> 
+            <p class="text-gray-700 mb-2 break-words whitespace-normal overflow-wrap-normal">${description}</p>
+          </div>
+            <div class="flex justify-end space-x-2 p-4 bg-[#fff0f5] absolute bottom-0 right-0 left-0">
+              <a href="/edit-product/${item.pk}" class="bg-[#ff9ec3] hover:bg-[#ffb6d3] text-white rounded-full px-4 py-2 transition duration-300 shadow-md">
+                Edit
+              </a>
+              <a href="/delete-product/${item.pk}" class="bg-[#ff6b9d] hover:bg-[#ff8fb3] text-white rounded-full px-4 py-2 transition duration-300 shadow-md">
+                Delete
+              </a>
+            </div>
+          </div>
+        </div>
+        `;
+      });
+    }
+    document.getElementById("product_cards").className = classNameString;
+    document.getElementById("product_cards").innerHTML = htmlString;
+
+    function formatRupiah(price) {
+      return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(price);
+    }
+
+    document.querySelectorAll(".product-price").forEach(function(priceElement) {
+      const price = priceElement.getAttribute("data-price");
+      priceElement.innerText = formatRupiah(price);
+    });
+  }
+
+  refreshProductEntries();
+  ...
+</script>
+```
+
+</details>
+
+<details>
+<summary>Impelementasi AJAX POST</summary>
+
+Dalam mengimplementasikan AJAX `POST`, terlebih dahulu kita lakukan modifikasi pada berkas `views.py` kita. Berikut adalah potongan kode yang saya tambahkan:
+
+```py
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+...
+@csrf_exempt
+@require_POST
+def create_ajax(request) :
+    user = request.user
+    name = strip_tags(request.POST.get('name'))    
+    price = strip_tags(request.POST.get('price'))
+    description = strip_tags(request.POST.get('description'))
+    
+    new_product = Product(
+        user = user,
+        name = name,
+        price = price,
+        description = description
+    )
+    
+    if (not name.strip() or not price.strip() or not description.strip()) :
+        return HttpResponse(b"BAD REQUEST", status = 400)
+    else :
+        new_product.save()
+    
+    return HttpResponse(b"CREATED", status = 201)
+```
+
+Kemudian, kita lakukan `routing` fungsi `create_ajax` tersebut pada `urls.py`. Berikut adalah potongan kode yang saya tambahkan:
+
+```py
+from main.views import ..., add create_ajax
+...
+urlpatterns = [
+  ...
+  path('create-ajax', create_ajax, name='create_ajax'),
+  ...
+]
+```
+
+Kemudian, kita akan membuat modal yang memanfaatkan fungsi `create_ajax` yang kita telah buat tersebut. Berikut adalah potongan kode yang saya tambahkan:
+
+```html
+<button data-modal-target="crudModal" data-modal-toggle="crudModal" class="ml-auto bg-[#c78ca0] hover:bg-[#d9a7a4] text-white font-medium py-2 px-4 rounded-lg transition duration-300 ease-in-out w-full sm:w-auto text-center" onclick="showModal();">
+  Add New Product with AJAX
+</button>
+...
+<div id="crudModal" tabindex="-1" aria-hidden="true" class="hidden fixed inset-0 z-50 w-full flex items-center justify-center bg-gray-800 bg-opacity-50 overflow-x-hidden overflow-y-auto transition-opacity duration-300 ease-out">
+  <div id="crudModalContent" class="relative bg-white rounded-lg shadow-lg w-5/6 sm:w-3/4 md:w-1/2 lg:w-1/3 mx-4 sm:mx-0 transform scale-95 opacity-0 transition-transform transition-opacity duration-300 ease-out">
+    <div class="flex items-center justify-between p-4 border-b rounded-t">
+      <h3 class="text-xl font-semibold text-gray-900"> Add New Product </h3>
+      <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center" id="closeModalBtn">
+        <span class="sr-only">Close modal</span>
+      </button>
+    </div>
+    <div class="px-6 py-4 space-y-6 form-style">
+      <form id="productEntryForm">
+        <div class="mb-4">
+          <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+          <input type="text" id="name" name="name" class="mt-1 block w-full border border-gray-300 rounded-md p-2 hover:border-indigo-700" placeholder="Enter your product name" required>
+        </div>
+        <div class="mb-4">
+          <label for="price" class="block text-sm font-medium text-gray-700">Price</label>
+          <input type="number" id="price" name="price" class="mt-1 block w-full border border-gray-300 rounded-md p-2 hover:border-indigo-700" placeholder="Enter your product price" required>
+        </div>
+        <div class="mb-4">
+          <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+          <textarea id="description" name="description" rows="3" class="mt-1 block w-full h-52 resize-none border border-gray-300 rounded-md p-2 hover:border-indigo-700" placeholder="Describe your product" required></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-2 p-6 border-t border-gray-200 rounded-b justify-center md:justify-end">
+      <button type="submit" id="submitProductEntry" form="productEntryForm" class="bg-[#ff9ec3] hover:bg-[#ffb6d3] text-white rounded-full px-4 py-2 transition duration-300 shadow-md"> Save </button>
+      <button type="button" class="bg-[#ff6b9d] hover:bg-[#ff8fb3] text-white rounded-full px-4 py-2 transition duration-300 shadow-md" id="cancelButton"> Cancel </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const modal = document.getElementById('crudModal');
+  const modalContent = document.getElementById('crudModalContent');
+
+  function showModal() {
+      const modal = document.getElementById('crudModal');
+      const modalContent = document.getElementById('crudModalContent');
+
+      document.getElementById("productEntryForm").reset();
+
+      modal.classList.remove('hidden'); 
+      setTimeout(() => {
+        modalContent.classList.remove('opacity-0', 'scale-95');
+        modalContent.classList.add('opacity-100', 'scale-100');
+      }, 50); 
+  }
+
+  function hideModal() {
+      const modal = document.getElementById('crudModal');
+      const modalContent = document.getElementById('crudModalContent');
+
+      modalContent.classList.remove('opacity-100', 'scale-100');
+      modalContent.classList.add('opacity-0', 'scale-95');
+
+      setTimeout(() => {
+        modal.classList.add('hidden');
+      }, 150); 
+  }
+
+  document.getElementById("cancelButton").addEventListener("click", hideModal);
+  document.getElementById("closeModalBtn").addEventListener("click", hideModal);
+
+  async function addProductEntry() {
+    try {
+      const response = await fetch("{% url 'main:create_ajax' %}", {
+        method: "POST",
+        body: new FormData(document.querySelector('#productEntryForm')),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create product');
+      }
+
+      await refreshProductEntries();
+      document.getElementById("productEntryForm").reset();
+      hideModal();
+    } catch (error) {
+      alert('Error: ' + error.message);
+    }
+  }
+
+  document.getElementById("productEntryForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    addProductEntry();
+  });
+</script>
+```
+
+Sekarang, kita sudah dapat menggunakan modal yang mengimplementasikan AJAX `POST`!
+</details>
+
+<details>
+<summary>Implementasi Perlindungan pada fungsi GET dan POST</summary>
+
+Saat ini, aplikasi kita masih rentan terhadap berbagai serangan. Untuk melindungi fungsi GET, saya menambahkan field `user` pada setiap objek Product yang dibuat oleh pengguna. Hal ini terlihat pada kode berikut:
+
+```py
+@csrf_exempt
+@require_POST
+def create_ajax(request) :
+    user = request.user
+    name = strip_tags(request.POST.get('name'))    
+    price = strip_tags(request.POST.get('price'))
+    description = strip_tags(request.POST.get('description'))
+    
+    new_product = Product(
+        user = user, # Objek Product baru yang dibuat hanya disimpan pada user ini
+        name = name,
+        price = price,
+        description = description
+    )
+    ...
+```
+
+Kemudian, untuk melindungi aplikasi web saya dari serangan XSS, saya menggunakan _library_ `strip_tags`. Pertama-tama, _import_ kedua _library_ tersebut pada berkas `views.py` dan `forms.py`. Berikut adalah implementasinya:
+
+```py
+# views.py
+from django.utils.html import strip_tags
+
+@csrf_exempt
+@require_POST
+def create_ajax(request) :
+    user = request.user
+    name = strip_tags(request.POST.get('name')) # Gunakan strip_tags 
+    price = strip_tags(request.POST.get('price')) # Gunakan strip_tags
+    description = strip_tags(request.POST.get('description')) # Gunakan strip_tags
+    ...
+```
+
+```py
+# forms.py
+from django.utils.html import strip_tags
+
+class ProductForm(ModelForm) :
+    class Meta :
+        model = Product
+        fields = ["name", "price", "description"]
+    
+    def clean_name(self): # Gunakan strip_tags
+        name = self.cleaned_data["name"]
+        return strip_tags(name)
+    
+    def clean_price(self): # Gunakan strip_tags
+        price = self.cleaned_data["price"]
+        return strip_tags(price)
+    
+    def clean_description(self): # Gunakan strip_tags
+        description = self.cleaned_data["description"]
+        return strip_tags(description)
+```
+
+Aplikasi web kita sekarang sudah aman dari serangan XSS! Selanjutnya, kita tambahkan fungsi DOMPurify. Berikut adalah potongan kode yang saya ganti pada `main.html`:
+
+```html
+{% block meta %}
+<title>marquette</title>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.7/dist/purify.min.js"></script>
+{% endblock meta %}
+...
+<script>
+  ...
+
+  async function refreshProductEntries() {
+    ...
+
+    if (productEntries.length == 0) {
+      ...
+    } else {
+      ...
+      productEntries.forEach((item) => {
+        const name = DOMPurify.sanitize(item.fields.name);
+        const price = DOMPurify.sanitize(item.fields.price);
+        const description = DOMPurify.sanitize(item.fields.description);
+        ...
+      });
+    }
+    ...
+  }
+  ...
+</script>
+```
+</details>
+
+## Jelaskan manfaat dari penggunaan JavaScript dalam pengembangan aplikasi web!
+
+JavaScript memiliki banyak sekali manfaat dalam pengembangan aplikasi web, seperti:
+1. **Interaktivitas**
+
+   JavaScript memungkinkan kita membuat aplikasi web yang lebih interaktif. Hal ini dibuktikan dengan banyaknya animasi dan elemen-elemen interaktif yang dapat dibuat oleh JavaScript. Hal ini didukung dengan banyaknya framework pengembangan aplikasi website yang menggunakan bahasa ini.
+
+2. **Kompatibilitas**
+   
+   JavaScript dapat digunakan pada berbagai platform (_cross-platform_), sehingga kita tidak perlu terlalu takut akan masalah kompatibilitas antara berbagai perangkat yang menggunakannya.
+
+3. **Asynchronous**
+   
+   JavaScript mendukung adanya pemrograman secara asinkronus (_Asynchronous Programming_), sehingga pengguna tidak perlu menunggu respon dari server dan dapat melakukan tugas lainnya ketika menggunakan website kita. Hal ini terlihat pada penggunaan fungsi `async` ataupun `await` pada aplikasi website kita.
+
+## Jelaskan fungsi dari penggunaan await ketika kita menggunakan fetch()! Apa yang akan terjadi jika kita tidak menggunakan await?
+
+Fungsi penggunaan `await` ketika menggunakan `fetch` adalah untuk menunggu hasil dari operasi `fetch` sebelum melanjutkan ke operasi selanjutnya. Dengan menggunakan `await`, kita dapat memastikan bahwa `fetch` pasti sudah mendapatkan data yang diinginkan sebelum mengeksekusi baris-baris kode selanjutnya.
+
+Apabila kita tidak menggunakan `await` ketika melakukan `fetch`, maka bisa saja aplikasi web kita tidak mendapatkan data yang diinginkan. Hal ini diakibatkan oleh _promise_ yang belum selesai, sehingga baris-baris kode selanjutnya mungkin tidak mendapatkan data yang sesuai.
+
+## Mengapa kita perlu menggunakan decorator csrf_exempt pada view yang akan digunakan untuk AJAX POST?
+
+Ketika menggunakan AJAX `POST`, seringkali _request_ tersebut dibuat tanpa menggunakan token CSRF. Hal ini mengakibatkan Django menolak _request_ tersebut karena tidak melewati validasi CSRF yang ada. Untuk menangani hal tersebut, `csrf_exempt` digunakan. Decorator ini berfungsi untuk menonaktifkan pengecekan terhadap token CSRF. Sehingga, `views` yang memanfaatkan AJAX `POST` dapat digunakan tanpa kendala. Namun, perlu dicatat bahwa penggunaan `csrf_exempt` harus dilakukan secara hati-hati. Dengan menonaktifkan validasi terhadap token CSRF, kita sangat rentan untuk mengalami serangan CSRF. Dengan demikian, gunakanlah `csrf_exempt` hanya pada `views` yang aman dan tidak dapat diakses secara langsung oleh publik.
+
+## Pada tutorial PBP minggu ini, pembersihan data input pengguna dilakukan di belakang (backend) juga. Mengapa hal tersebut tidak dilakukan di frontend saja?
+
+Ada beberapa alasan mengapa pembersihan data input juga dilakukan pada backend, salah satunya adalah masalah keamanan. Validasi data yang dilakukan pada frontend seringkali memiliki celah dan dapat dengan mudah dilewati oleh para penyerang dengan memanipulasi _request_ yang dilakukan. Dengan demikian, melakukan validasi sekali lagi melalui backend menjadi pilihan utama. Hal ini didukung dengan fakta bahwa backend lebih tersembunyi dan tidak dapat diakses secara langsung oleh pengguna, sehingga melakukan manipulasi _request_ untuk melewati validasinya terbilang sulit atau bahkan mustahil.
+
+Kemudian, alasan lain validasi dilakukan di backend adalah integritas dan konsistensi data. Backend merupakan penanggung jawab utama dalam pengelolaan data suatu aplikasi web. Dengan demikian, memastikan kevalidan serta konsistensi data yang masuk dari frontend merupakan tugas dari backend. Hal ini didasarkan pada fakta bahwa bisa saja terdapat kerentanan pada validasi frontend dan melalui kerentanan tersebut, penyerang memasukkan data yang formatnya tidak sesuai dengan format yang diinginkan.
